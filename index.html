@@ -18,14 +18,28 @@
   .btn-sm{font-family:var(--mono);font-size:11px;padding:4px 10px;border:0.5px solid #2A5080;border-radius:6px;background:transparent;color:var(--azul5);cursor:pointer;transition:all .15s}
   .btn-sm:hover{border-color:var(--azul5);color:#FDFCFA}
   .container{max-width:1400px;margin:0 auto;padding:1.5rem}
-  .upload-section{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:calc(100vh - 52px);padding:2rem}
-  .upload-box{background:var(--surface);border:1.5px dashed var(--border);border-radius:12px;padding:4rem 6rem;text-align:center;cursor:pointer;transition:all .2s;max-width:500px;width:100%}
+  .upload-section{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:calc(100vh - 52px);padding:2rem;gap:1rem}
+  .upload-box{background:var(--surface);border:1.5px dashed var(--border);border-radius:12px;padding:3rem 5rem;text-align:center;cursor:pointer;transition:all .2s;max-width:500px;width:100%}
   .upload-box:hover,.upload-box.drag{border-color:var(--azul);background:var(--bg)}
   .upload-icon{width:48px;height:48px;margin:0 auto 1.5rem;background:var(--azul);border-radius:8px;display:flex;align-items:center;justify-content:center}
   .upload-icon svg{width:24px;height:24px;fill:#FDFCFA}
   .upload-title{font-size:16px;font-weight:500;margin-bottom:8px}
   .upload-sub{font-size:13px;color:var(--muted)}
-  .upload-hint{margin-top:1.5rem;font-size:11px;color:var(--hint);font-family:var(--mono)}
+  .upload-hint{margin-top:1rem;font-size:11px;color:var(--hint);font-family:var(--mono)}
+  .divider{display:flex;align-items:center;gap:12px;max-width:500px;width:100%}
+  .divider-line{flex:1;height:1px;background:var(--border)}
+  .divider-text{font-size:11px;color:var(--hint);font-family:var(--mono)}
+  .onedrive-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.5rem 2rem;text-align:center;max-width:500px;width:100%}
+  .onedrive-box p{font-size:13px;color:var(--muted);margin-bottom:1rem}
+  .btn-onedrive{font-family:var(--mono);font-size:12px;padding:8px 20px;border:1px solid var(--azul);border-radius:6px;background:var(--azul);color:#FDFCFA;cursor:pointer;transition:all .15s;width:100%}
+  .btn-onedrive:hover{opacity:.85}
+  .loading-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:2rem;text-align:center;max-width:500px;width:100%;display:none}
+  .spinner{width:32px;height:32px;border:3px solid var(--borderL);border-top-color:var(--azul);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 1rem}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .loading-text{font-size:13px;color:var(--muted);font-family:var(--mono)}
+  .error-box{background:#FCEBEB;border:1px solid #F09595;border-radius:12px;padding:1.5rem 2rem;max-width:500px;width:100%;display:none;text-align:center}
+  .error-box p{font-size:13px;color:#791F1F;margin-bottom:1rem}
+  .btn-retry{font-family:var(--mono);font-size:12px;padding:7px 16px;border:1px solid #791F1F;border-radius:6px;background:transparent;color:#791F1F;cursor:pointer}
   #dashboard{display:none}
   .page-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:1.5rem;padding-bottom:1.25rem;border-bottom:1px solid var(--borderL);flex-wrap:wrap;gap:1rem}
   .page-header h1{font-size:22px;font-weight:600;letter-spacing:-.02em}
@@ -104,20 +118,43 @@
   <span class="topbar-title">CONTROLE DE DOCUMENTOS</span>
   <div class="topbar-right">
     <span class="topbar-meta" id="topbarMeta">Carregue uma planilha</span>
-    <button class="btn-sm" id="btnReload" style="display:none" onclick="resetApp()">↺ trocar arquivo</button>
+    <button class="btn-sm" id="btnReload" style="display:none" onclick="resetApp()">↺ trocar</button>
   </div>
 </div>
 
 <div id="uploadSection" class="upload-section">
+
+  <div class="loading-box" id="loadingBox">
+    <div class="spinner"></div>
+    <p class="loading-text">Buscando dados do OneDrive...</p>
+  </div>
+
+  <div class="error-box" id="errorBox">
+    <p id="errorMsg">Não foi possível carregar automaticamente.</p>
+    <button class="btn-retry" onclick="tryOneDrive()">Tentar novamente</button>
+  </div>
+
   <div class="upload-box" id="dropZone">
     <div class="upload-icon">
       <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm4 18H6V4h7v5h5v11z"/></svg>
     </div>
     <div class="upload-title">Carregar planilha</div>
     <div class="upload-sub">Arraste o arquivo .xlsx aqui ou clique para selecionar</div>
-    <div class="upload-hint">FM-ENG-RM2-001 · BASE LD · Dados lidos localmente, nada enviado para a internet</div>
+    <div class="upload-hint">Dados lidos localmente · nada enviado para a internet</div>
     <input type="file" id="fileInput" accept=".xlsx" style="display:none">
   </div>
+
+  <div class="divider">
+    <div class="divider-line"></div>
+    <span class="divider-text">ou</span>
+    <div class="divider-line"></div>
+  </div>
+
+  <div class="onedrive-box">
+    <p>Carregar automaticamente do OneDrive da empresa</p>
+    <button class="btn-onedrive" onclick="tryOneDrive()">Carregar do OneDrive</button>
+  </div>
+
 </div>
 
 <div id="dashboard">
@@ -128,93 +165,59 @@
         <p id="obraSubtitle"></p>
       </div>
       <div class="header-actions">
-        <button class="btn" onclick="triggerUpdate()">↑ Atualizar planilha</button>
-        <input type="file" id="fileInputUpdate" accept=".xlsx" style="display:none">
-        <button class="btn" onclick="exportCSV()">Exportar CSV</button>
+        <button class="btn" onclick="tryOneDrive()">↺ Atualizar do OneDrive</button>
+        <button class="btn" onclick="resetApp()">Trocar arquivo</button>
+        <button class="btn" onclick="exportCSV()">CSV</button>
         <button class="btn btn-primary" onclick="exportExcel()">Exportar Excel</button>
       </div>
     </div>
-
     <div class="saved-banner" id="savedBanner" style="display:none">
       <span id="savedMsg"></span>
-      <span style="opacity:.6">Dados salvos neste navegador</span>
+      <span style="opacity:.6">Fonte: OneDrive / planilha carregada</span>
     </div>
-
     <div class="metrics" id="metricsRow"></div>
     <div class="status-row" id="statusRow"></div>
-
     <div class="charts-row">
-      <div class="card">
-        <div class="card-title">Por fornecedor</div>
-        <div id="lgForn" class="legend"></div>
-        <div style="position:relative;height:180px"><canvas id="chForn"></canvas></div>
-      </div>
-      <div class="card">
-        <div class="card-title">Por disciplina</div>
-        <div id="lgDisc" class="legend"></div>
-        <div style="position:relative;height:180px"><canvas id="chDisc"></canvas></div>
-      </div>
+      <div class="card"><div class="card-title">Por fornecedor</div><div id="lgForn" class="legend"></div><div style="position:relative;height:180px"><canvas id="chForn"></canvas></div></div>
+      <div class="card"><div class="card-title">Por disciplina</div><div id="lgDisc" class="legend"></div><div style="position:relative;height:180px"><canvas id="chDisc"></canvas></div></div>
     </div>
-
     <div class="charts-row">
-      <div class="card">
-        <div class="card-title">Emitido x não emitido — por disciplina</div>
-        <div id="lgEmit" class="legend"></div>
-        <div style="position:relative;height:190px"><canvas id="chEmit"></canvas></div>
-      </div>
-      <div class="card">
-        <div class="card-title">Aprovado x não aprovado — por disciplina</div>
-        <div id="lgAprov" class="legend"></div>
-        <div style="position:relative;height:190px"><canvas id="chAprov"></canvas></div>
-      </div>
+      <div class="card"><div class="card-title">Emitido x não emitido — por disciplina</div><div id="lgEmit" class="legend"></div><div style="position:relative;height:190px"><canvas id="chEmit"></canvas></div></div>
+      <div class="card"><div class="card-title">Aprovado x não aprovado — por disciplina</div><div id="lgAprov" class="legend"></div><div style="position:relative;height:190px"><canvas id="chAprov"></canvas></div></div>
     </div>
-
     <div class="alerts-card" id="alertsCard" style="display:none">
       <div class="alerts-title" id="alertsTitle"></div>
       <div id="alertsList"></div>
     </div>
-
     <div class="tbl-section">
       <div class="tbl-top">
-        <div class="filter-row">
-          <span class="filter-label">Status:</span>
-          <div id="chipsStatus" style="display:flex;gap:6px;flex-wrap:wrap"></div>
-        </div>
-        <div class="filter-row">
-          <span class="filter-label">Disciplina:</span>
-          <div id="chipsDisc" style="display:flex;gap:6px;flex-wrap:wrap"></div>
-        </div>
-        <div class="filter-row">
-          <span class="filter-label">Fornecedor:</span>
-          <div id="chipsForn" style="display:flex;gap:6px;flex-wrap:wrap"></div>
-        </div>
+        <div class="filter-row"><span class="filter-label">Status:</span><div id="chipsStatus" style="display:flex;gap:6px;flex-wrap:wrap"></div></div>
+        <div class="filter-row"><span class="filter-label">Disciplina:</span><div id="chipsDisc" style="display:flex;gap:6px;flex-wrap:wrap"></div></div>
+        <div class="filter-row"><span class="filter-label">Fornecedor:</span><div id="chipsForn" style="display:flex;gap:6px;flex-wrap:wrap"></div></div>
         <div class="tbl-controls">
           <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
             <span class="tbl-count" id="tblCount"></span>
             <div class="active-filters" id="activeFilters"></div>
           </div>
-          <div class="search-wrap">
-            <span class="si">⌕</span>
-            <input class="search-input" type="text" id="searchInput" placeholder="Buscar código ou título...">
+          <div style="display:flex;align-items:center;gap:6px">
+            <div class="search-wrap"><span class="si">⌕</span><input class="search-input" type="text" id="searchInput" placeholder="Buscar código ou título..."></div>
           </div>
         </div>
       </div>
       <div class="tbl-wrap">
         <table>
-          <thead><tr>
-            <th>Código</th><th>Título</th><th>Fornecedor</th><th>Disciplina</th>
-            <th>Rev.</th><th>Previsto</th><th>Emissão</th><th>Status</th><th>ACC</th>
-          </tr></thead>
+          <thead><tr><th>Código</th><th>Título</th><th>Fornecedor</th><th>Disciplina</th><th>Rev.</th><th>Previsto</th><th>Emissão</th><th>Status</th><th>ACC</th></tr></thead>
           <tbody id="tableBody"></tbody>
         </table>
       </div>
     </div>
-    <div class="footer">Dados processados localmente · Nenhuma informação enviada para servidores externos</div>
+    <div class="footer">Dados atualizados automaticamente via Power Automate + OneDrive</div>
   </div>
 </div>
 
 <script>
-const SK='painel_docs_v4',SM='painel_meta_v4';
+const SK='painel_v5',SM='painel_meta_v5';
+const ONEDRIVE_URL='https://rm2-my.sharepoint.com/personal/marcos_soares_rm2engenharia_com_br/_layouts/15/download.aspx?share=IQBJutZbSa1VQ7MPopGopamyAVPSCams38LywPxBkSR-wNE';
 let allRows=[],filters={status:'Todos',disc:'Todas',forn:'Todos'},search='';
 let charts={};
 const AZ1='#0D2B4E',AZ2='#1A4A7A',AZ3='#2E6FAD',AZ4='#5B96C8',AZ5='#8BAED1';
@@ -225,67 +228,144 @@ const DISC_LIST=['Civil','Eletromecânico','Fabricação','Telecomunicação','E
 const STATUS_CFG={'Liberado':{cls:'b-lib',sc:'sc-lib',label:'Liberado'},'Em análise':{cls:'b-anal',sc:'sc-anal',label:'Em análise'},'Pendente de emissão':{cls:'b-pend',sc:'sc-pend',label:'Pendente de emissão'},'Não liberado':{cls:'b-nlib',sc:'sc-nlib',label:'Não liberado'},'Liberado com comentários':{cls:'b-lcom',sc:'sc-lcom',label:'Lib. c/ comentários'},'Cancelado':{cls:'b-canc',sc:'sc-canc',label:'Cancelado'}};
 const SO=Object.keys(STATUS_CFG);
 const COPTS={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{font:{size:10},color:'#7A7670',autoSkip:false,maxRotation:30},grid:{display:false},border:{display:false}},y:{ticks:{font:{size:10},color:'#7A7670'},grid:{color:'rgba(0,0,0,0.05)'},border:{display:false},beginAtZero:true}}};
+
 function getCfg(s){if(!s)return{cls:'b-canc',sc:'sc-canc',label:'—'};for(const k of SO)if(s.toLowerCase().includes(k.toLowerCase()))return STATUS_CFG[k];return{cls:'b-canc',sc:'sc-canc',label:s}}
 function fmtDate(v){if(!v||v==='')return'—';const d=new Date(v);return isNaN(d)?String(v).slice(0,10):d.toLocaleDateString('pt-BR')}
 function toDate(v){if(!v)return null;const d=new Date(v);return isNaN(d)?null:d}
 function getFiltered(){return allRows.filter(r=>{if(filters.status!=='Todos'&&r.status!==filters.status)return false;if(filters.disc!=='Todas'&&r.disciplina!==filters.disc)return false;if(filters.forn!=='Todos'&&r.fornecedor!==filters.forn)return false;if(search&&!r.codigo.toLowerCase().includes(search)&&!r.titulo.toLowerCase().includes(search))return false;return true})}
-const dz=document.getElementById('dropZone'),fi=document.getElementById('fileInput'),fiu=document.getElementById('fileInputUpdate');
+
+// Upload manual
+const dz=document.getElementById('dropZone'),fi=document.getElementById('fileInput');
 dz.addEventListener('click',()=>fi.click());
 dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('drag')});
 dz.addEventListener('dragleave',()=>dz.classList.remove('drag'));
-dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('drag');if(e.dataTransfer.files[0])processFile(e.dataTransfer.files[0])});
-fi.addEventListener('change',e=>{if(e.target.files[0])processFile(e.target.files[0])});
-fiu.addEventListener('change',e=>{if(e.target.files[0])processFile(e.target.files[0])});
+dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('drag');if(e.dataTransfer.files[0])processXLSX(e.dataTransfer.files[0])});
+fi.addEventListener('change',e=>{if(e.target.files[0])processXLSX(e.target.files[0])});
 document.getElementById('searchInput').addEventListener('input',e=>{search=e.target.value.toLowerCase();renderTable();updateAF()});
-window.triggerUpdate=()=>fiu.click();
-function processFile(file){
+
+// Carregar do OneDrive
+window.tryOneDrive=async function(){
+  document.getElementById('loadingBox').style.display='block';
+  document.getElementById('errorBox').style.display='none';
+  document.getElementById('dropZone').style.display='none';
+  document.querySelector('.divider').style.display='none';
+  document.querySelector('.onedrive-box').style.display='none';
+  try{
+    const resp=await fetch(ONEDRIVE_URL,{credentials:'include'});
+    if(!resp.ok)throw new Error('Erro '+resp.status);
+    const blob=await resp.blob();
+    const file=new File([blob],'dados.json',{type:blob.type});
+    const text=await blob.text();
+    let data;
+    try{data=JSON.parse(text)}catch(e){
+      // Se não for JSON, tenta como XLSX
+      const arr=await blob.arrayBuffer();
+      const wb=XLSX.read(arr,{type:'array',cellDates:true});
+      const ws=wb.Sheets['BASE LD'];
+      if(!ws)throw new Error('Aba BASE LD não encontrada');
+      const raw=XLSX.utils.sheet_to_json(ws,{header:1,defval:'',raw:false});
+      data=raw.slice(5).filter(r=>r[0]&&String(r[0]).trim()!=='').map(r=>mapRow(r));
+      initDash(data,'OneDrive (planilha)',new Date());
+      return;
+    }
+    // JSON do Power Automate
+    if(Array.isArray(data)){
+      allRows=data.map(r=>({
+        codigo:String(r['No  RM2/CLIENTE']||r.codigo||'').trim(),
+        revisao:String(r['REVISÃO \nATUAL']||r.revisao||'').trim(),
+        fornecedor:String(r['FORNECEDOR']||r.fornecedor||'').trim(),
+        titulo:String(r['TÍTULO ']||r['TÍTULO']||r.titulo||'').trim(),
+        disciplina:String(r['DISCIPLINA']||r.disciplina||'').trim(),
+        previsto:String(r['PREVISTO']||r.previsto||''),
+        dataEmissao:String(r['DATA EMISSÃO']||r.dataEmissao||''),
+        status:String(r['STATUS']||r.status||'').trim(),
+        linkACC:String(r['LINK DA PASTA OU Nº GRD']||r.linkACC||'').trim(),
+      }));
+      initDash(allRows,'OneDrive (automático)',new Date());
+    }
+  }catch(err){
+    document.getElementById('loadingBox').style.display='none';
+    document.getElementById('errorBox').style.display='block';
+    document.getElementById('errorMsg').textContent='Não foi possível carregar: '+err.message+'. Faça login na conta corporativa e tente novamente, ou carregue o arquivo manualmente.';
+    document.getElementById('dropZone').style.display='block';
+    document.querySelector('.divider').style.display='flex';
+    document.querySelector('.onedrive-box').style.display='block';
+  }
+};
+
+function mapRow(r){
+  return{
+    codigo:String(r[0]||'').trim(),revisao:String(r[1]||'').trim(),
+    fornecedor:String(r[2]||'').trim(),titulo:String(r[3]||'').trim(),
+    disciplina:String(r[4]||'').trim(),previsto:r[6]?String(r[6]):'',
+    dataEmissao:r[9]?String(r[9]):'',status:String(r[11]||'').trim(),
+    linkACC:String(r[25]||'').trim()
+  }
+}
+
+function processXLSX(file){
   const r=new FileReader();
-  r.onload=e=>{try{
-    const wb=XLSX.read(e.target.result,{type:'binary',cellDates:true});
-    const ws=wb.Sheets['BASE LD'];
-    if(!ws){alert('Aba "BASE LD" não encontrada.');return}
-    const raw=XLSX.utils.sheet_to_json(ws,{header:1,defval:'',raw:false});
-    allRows=raw.slice(5).filter(r=>r[0]&&String(r[0]).trim()!=='').map(r=>({codigo:String(r[0]||'').trim(),revisao:String(r[1]||'').trim(),fornecedor:String(r[2]||'').trim(),titulo:String(r[3]||'').trim(),disciplina:String(r[4]||'').trim(),previsto:r[6]?String(r[6]):'',dataEmissao:r[9]?String(r[9]):'',status:String(r[11]||'').trim(),linkACC:String(r[25]||'').trim()}));
-    try{localStorage.setItem(SK,JSON.stringify(allRows));localStorage.setItem(SM,JSON.stringify({fileName:file.name,savedAt:new Date().toISOString()}))}catch(e){}
-    initDash(file.name,new Date());
-  }catch(err){alert('Erro: '+err.message)}};
+  r.onload=e=>{
+    try{
+      const wb=XLSX.read(e.target.result,{type:'binary',cellDates:true});
+      const ws=wb.Sheets['BASE LD'];
+      if(!ws){alert('Aba BASE LD não encontrada.');return}
+      const raw=XLSX.utils.sheet_to_json(ws,{header:1,defval:'',raw:false});
+      const data=raw.slice(5).filter(r=>r[0]&&String(r[0]).trim()!=='').map(r=>mapRow(r));
+      initDash(data,file.name,new Date());
+    }catch(err){alert('Erro: '+err.message)}
+  };
   r.readAsBinaryString(file);
 }
-function initDash(fn,date){
+
+function initDash(data,fonte,date){
+  allRows=Array.isArray(data)?data:[];
   const fmt=date.toLocaleDateString('pt-BR')+' às '+date.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
-  document.getElementById('obraSubtitle').textContent=`${allRows.length} documentos · ${fn}`;
-  document.getElementById('topbarMeta').textContent=fn;
+  document.getElementById('obraSubtitle').textContent=`${allRows.length} documentos · ${fonte}`;
+  document.getElementById('topbarMeta').textContent=fonte;
   document.getElementById('btnReload').style.display='block';
   document.getElementById('savedBanner').style.display='flex';
-  document.getElementById('savedMsg').textContent=`Última atualização: ${fmt}`;
+  document.getElementById('savedMsg').textContent=`Carregado em: ${fmt}`;
   document.getElementById('uploadSection').style.display='none';
+  document.getElementById('loadingBox').style.display='none';
   document.getElementById('dashboard').style.display='block';
   renderAll();
 }
+
 window.resetApp=function(){
   allRows=[];filters={status:'Todos',disc:'Todas',forn:'Todos'};search='';
-  try{localStorage.removeItem(SK);localStorage.removeItem(SM)}catch(e){}
   Object.values(charts).forEach(c=>c.destroy());charts={};
   document.getElementById('uploadSection').style.display='flex';
   document.getElementById('dashboard').style.display='none';
   document.getElementById('btnReload').style.display='none';
+  document.getElementById('loadingBox').style.display='none';
+  document.getElementById('errorBox').style.display='none';
+  document.getElementById('dropZone').style.display='block';
+  document.querySelector('.divider').style.display='flex';
+  document.querySelector('.onedrive-box').style.display='block';
   document.getElementById('topbarMeta').textContent='Carregue uma planilha';
   document.getElementById('fileInput').value='';
 };
+
 function renderAll(){renderMetrics();renderStatusCards();renderCharts();renderAlerts();renderChips();renderTable();updateAF()}
+
 function renderMetrics(){
   const t=allRows.length,byS={};
   allRows.forEach(r=>{byS[r.status]=(byS[r.status]||0)+1});
   const lib=byS['Liberado']||0,anal=byS['Em análise']||0,pend=byS['Pendente de emissão']||0,nlib=byS['Não liberado']||0;
   document.getElementById('metricsRow').innerHTML=[{label:'Total',val:t,sub:'documentos',color:'var(--text)'},{label:'Liberados',val:lib,sub:Math.round(lib/t*100)+'%',color:VD2},{label:'Em análise',val:anal,sub:Math.round(anal/t*100)+'%',color:AZ3},{label:'Pendentes',val:pend,sub:Math.round(pend/t*100)+'%',color:'#633806'},{label:'Não liberados',val:nlib,sub:Math.round(nlib/t*100)+'%',color:'#791F1F'}].map(d=>`<div class="metric"><div class="metric-label">${d.label}</div><div class="metric-value" style="color:${d.color}">${d.val}</div><div class="metric-sub">${d.sub}</div></div>`).join('');
 }
+
 function renderStatusCards(){
   const byS={};allRows.forEach(r=>{byS[r.status]=(byS[r.status]||0)+1});
   document.getElementById('statusRow').innerHTML=SO.map(s=>{const cnt=byS[s]||0;if(!cnt)return'';const cfg=STATUS_CFG[s];return`<div class="sc ${cfg.sc}${filters.status===s?' active':''}" onclick="setFilter('status','${s}')"><div class="sc-count">${cnt}</div><div class="sc-label">${cfg.label}</div></div>`}).join('');
 }
+
 window.setFilter=function(type,val){const def={status:'Todos',disc:'Todas',forn:'Todos'};filters[type]=filters[type]===val?def[type]:val;renderStatusCards();renderChips();renderTable();updateAF()};
+
 function mkLg(id,items){document.getElementById(id).innerHTML=items.map(([l,c])=>`<span class="legend-item"><span class="swatch" style="background:${c}"></span>${l}</span>`).join('')}
 function dc(id){if(charts[id]){charts[id].destroy();delete charts[id]}}
+
 function renderCharts(){
   const byForn={},byDisc={};
   allRows.forEach(r=>{if(r.fornecedor)byForn[r.fornecedor]=(byForn[r.fornecedor]||0)+1;if(r.disciplina)byDisc[r.disciplina]=(byDisc[r.disciplina]||0)+1});
@@ -304,6 +384,7 @@ function renderCharts(){
   dc('chAprov');mkLg('lgAprov',[['Aprovado',VD3],['Não aprovado','#E24B4A']]);
   charts['chAprov']=new Chart(document.getElementById('chAprov'),{type:'bar',data:{labels:aL,datasets:[{label:'Aprovado',data:ap,backgroundColor:VD3,borderRadius:3},{label:'Não aprovado',data:nA,backgroundColor:'#E24B4A',borderRadius:3}]},options:COPTS});
 }
+
 function renderAlerts(){
   const today=new Date(),at=allRows.filter(r=>{if(r.dataEmissao)return false;const d=toDate(r.previsto);return d&&d<today});
   const card=document.getElementById('alertsCard');
@@ -312,6 +393,7 @@ function renderAlerts(){
   document.getElementById('alertsTitle').textContent=`${at.length} documento${at.length>1?'s':''} atrasado${at.length>1?'s':''} sem emissão`;
   document.getElementById('alertsList').innerHTML=at.slice(0,10).map(r=>{const d=toDate(r.previsto);const dias=Math.round((today-d)/86400000);return`<div class="alert-item"><span class="alert-cod">${r.codigo.slice(0,30)}</span><span class="alert-tit" title="${r.titulo}">${r.titulo}</span><span class="alert-dias">${dias}d · ${r.fornecedor}</span></div>`}).join('');
 }
+
 function renderChips(){
   const pS=SO.filter(s=>allRows.some(r=>r.status===s));
   document.getElementById('chipsStatus').innerHTML=['Todos',...pS].map(s=>`<button class="chip${filters.status===s?' active':''}" onclick="setFilter('status','${s}')">${s}</button>`).join('');
@@ -320,6 +402,7 @@ function renderChips(){
   const pF=[...new Set(allRows.map(r=>r.fornecedor).filter(Boolean))].sort();
   document.getElementById('chipsForn').innerHTML=['Todos',...pF].map(f=>`<button class="chip${filters.forn===f?' active':''}" onclick="setFilter('forn','${f.replace(/'/g,"\\'")}')">${f}</button>`).join('');
 }
+
 function updateAF(){
   const tags=[];
   if(filters.status!=='Todos')tags.push(filters.status);
@@ -328,6 +411,7 @@ function updateAF(){
   if(search)tags.push(`"${search}"`);
   document.getElementById('activeFilters').innerHTML=tags.length?'Filtros: '+tags.map(t=>`<span class="filter-tag">${t}</span>`).join(' '):'';
 }
+
 function renderTable(){
   const rows=getFiltered();
   document.getElementById('tblCount').textContent=`${rows.length} documentos`;
@@ -335,28 +419,25 @@ function renderTable(){
   if(!rows.length){tbody.innerHTML=`<tr><td colspan="9" class="empty-state">Nenhum documento encontrado</td></tr>`;return}
   tbody.innerHTML=rows.map(r=>{const cfg=getCfg(r.status);const lk=r.linkACC&&r.linkACC.startsWith('http')?`<a class="acc-link" href="${r.linkACC}" target="_blank">↗ ACC</a>`:'—';return`<tr><td class="mono-cell" title="${r.codigo}">${r.codigo}</td><td title="${r.titulo}">${r.titulo}</td><td>${r.fornecedor}</td><td>${r.disciplina}</td><td class="mono-cell">${r.revisao}</td><td class="mono-cell">${fmtDate(r.previsto)}</td><td class="mono-cell">${fmtDate(r.dataEmissao)}</td><td><span class="badge ${cfg.cls}">${r.status||'—'}</span></td><td>${lk}</td></tr>`}).join('');
 }
+
 function buildTag(){const p=[];if(filters.forn!=='Todos')p.push('_'+filters.forn.replace(/\s/g,'-'));if(filters.disc!=='Todas')p.push('_'+filters.disc.replace(/\s/g,'-'));if(filters.status!=='Todos')p.push('_'+filters.status.replace(/[\s/]/g,'-'));return p.join('')||'_todos'}
+
 window.exportCSV=function(){
-  const rows=getFiltered();if(!rows.length){alert('Nenhum dado para exportar.');return}
+  const rows=getFiltered();if(!rows.length){alert('Nenhum dado.');return}
   const h=['Código','Título','Fornecedor','Disciplina','Revisão','Data Prevista','Data Emissão','Status','Link ACC'];
   const lines=[h.join(';'),...rows.map(r=>[r.codigo,r.titulo,r.fornecedor,r.disciplina,r.revisao,fmtDate(r.previsto),fmtDate(r.dataEmissao),r.status,r.linkACC].map(v=>`"${String(v||'').replace(/"/g,'""')}"`).join(';'))];
   const blob=new Blob(['\uFEFF'+lines.join('\n')],{type:'text/csv;charset=utf-8'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`documentos${buildTag()}.csv`;a.click();
 };
+
 window.exportExcel=function(){
-  const rows=getFiltered();if(!rows.length){alert('Nenhum dado para exportar.');return}
+  const rows=getFiltered();if(!rows.length){alert('Nenhum dado.');return}
   const data=[['Código','Título','Fornecedor','Disciplina','Revisão','Data Prevista','Data Emissão','Status','Link ACC'],...rows.map(r=>[r.codigo,r.titulo,r.fornecedor,r.disciplina,r.revisao,fmtDate(r.previsto),fmtDate(r.dataEmissao),r.status,r.linkACC])];
   const ws=XLSX.utils.aoa_to_sheet(data);
   ws['!cols']=[{wch:35},{wch:50},{wch:16},{wch:16},{wch:8},{wch:14},{wch:14},{wch:22},{wch:20}];
   const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Documentos');
   XLSX.writeFile(wb,`documentos${buildTag()}.xlsx`);
 };
-window.addEventListener('load',()=>{
-  try{
-    const data=localStorage.getItem(SK),meta=localStorage.getItem(SM);
-    if(data&&data!=='null'){allRows=JSON.parse(data);const m=meta?JSON.parse(meta):{};initDash(m.fileName||'dados salvos',m.savedAt?new Date(m.savedAt):new Date())}
-  }catch(e){}
-});
 </script>
 </body>
 </html>
