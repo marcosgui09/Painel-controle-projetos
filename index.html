@@ -234,37 +234,52 @@ function farolInfo(pct){
 }
 
 function buildGauge(aprov,anal,tot){
-  const W=180,H=106,cx=90,cy=95,r=68,sw=14;
-  const pAp=Math.min(1,Math.max(0,aprov/tot));
-  const pAn=Math.min(1,Math.max(0,anal/tot));
-  const pRest=Math.max(0,1-pAp-pAn);
-  function pt(pct,radius){
-    const a=Math.PI+Math.min(1,Math.max(0,pct))*Math.PI;
-    return[cx+radius*Math.cos(a),cy+radius*Math.sin(a)];
-  }
-  function arcSeg(s,e,color){
-    s=Math.min(1,Math.max(0,s));
-    e=Math.min(1,Math.max(0,e));
-    if(e-s<0.002)return'';
-    const[x1,y1]=pt(s,r),[x2,y2]=pt(e,r);
-    const lg=(e-s)>0.5?1:0;
-    return`<path d="M${x1.toFixed(3)},${y1.toFixed(3)} A${r},${r} 0 ${lg},1 ${x2.toFixed(3)},${y2.toFixed(3)}" fill="none" stroke="${color}" stroke-width="${sw}" stroke-linecap="butt"/>`;
-  }
-  const[bx1,by1]=pt(0,r),[bx2,by2]=pt(1,r);
-  const bg=`<path d="M${bx1.toFixed(3)},${by1.toFixed(3)} A${r},${r} 0 0,1 ${bx2.toFixed(3)},${by2.toFixed(3)}" fill="none" stroke="#E8E4DC" stroke-width="${sw}" stroke-linecap="butt"/>`;
-  const segs=bg+arcSeg(0,pAp,'#2E9957')+arcSeg(pAp,pAp+pAn,'#185FA5')+arcSeg(pAp+pAn,1,'#E24B4A');
-  const needlePct=Math.min(0.99,Math.max(0.01,pAp));
-  const[nx,ny]=pt(needlePct,r-10);
+  const clamp=v=>Math.min(1,Math.max(0,v));
+  const pAp=clamp(aprov/tot);
+  const pAn=clamp(anal/tot);
   const pct=Math.round(pAp*100);
   const f=farolInfo(pct);
-  return{pct,f,svg:`<svg viewBox="0 0 ${W} ${H}" width="100%" xmlns="http://www.w3.org/2000/svg">
-    ${segs}
-    <line x1="${cx}" y1="${cy}" x2="${nx.toFixed(3)}" y2="${ny.toFixed(3)}" stroke="#0D2B4E" stroke-width="2.5" stroke-linecap="round"/>
-    <circle cx="${cx}" cy="${cy}" r="4.5" fill="#0D2B4E"/>
-    <text x="${cx}" y="${cy-24}" text-anchor="middle" font-size="19" font-weight="500" fill="${f.cor}" font-family="IBM Plex Mono,monospace">${pct}%</text>
-    <text x="${(cx-r).toFixed(1)}" y="${(cy+14).toFixed(1)}" text-anchor="middle" font-size="9" fill="#AAA69E" font-family="IBM Plex Mono,monospace">0%</text>
-    <text x="${(cx+r).toFixed(1)}" y="${(cy+14).toFixed(1)}" text-anchor="middle" font-size="9" fill="#AAA69E" font-family="IBM Plex Mono,monospace">100%</text>
-  </svg>`};
+  const id='g'+Math.random().toString(36).slice(2);
+  const html=`<div style="position:relative;width:100%;padding-bottom:55%">
+    <canvas id="${id}" style="position:absolute;top:0;left:0;width:100%;height:100%"></canvas>
+  </div>
+  <script>
+  (function(){
+    var c=document.getElementById('${id}');
+    var W=c.offsetWidth||300,H=Math.round(W*0.55);
+    c.width=W*2;c.height=H*2;
+    var ctx=c.getContext('2d');
+    ctx.scale(2,2);
+    var cx=W/2,cy=H*0.88,r=H*0.72,sw=r*0.22;
+    function arc(s,e,color){
+      if(e-s<0.003)return;
+      ctx.beginPath();
+      ctx.arc(cx,cy,r,Math.PI*(1+s),Math.PI*(1+e));
+      ctx.strokeStyle=color;ctx.lineWidth=sw;ctx.lineCap='butt';ctx.stroke();
+    }
+    arc(0,1,'#E8E4DC');
+    arc(0,${pAp},'#2E9957');
+    arc(${pAp},${pAp+pAn},'#185FA5');
+    arc(${pAp+pAn},1,'#E24B4A');
+    var nf=Math.min(0.98,Math.max(0.02,${pAp}));
+    var na=Math.PI*(1+nf);
+    var nl=r-sw*0.7;
+    ctx.beginPath();
+    ctx.moveTo(cx,cy);
+    ctx.lineTo(cx+nl*Math.cos(na),cy+nl*Math.sin(na));
+    ctx.strokeStyle='#0D2B4E';ctx.lineWidth=2;ctx.lineCap='round';ctx.stroke();
+    ctx.beginPath();ctx.arc(cx,cy,4,0,Math.PI*2);ctx.fillStyle='#0D2B4E';ctx.fill();
+    ctx.font='bold '+(H*0.18)+'px IBM Plex Mono,monospace';
+    ctx.fillStyle='${f.cor}';ctx.textAlign='center';
+    ctx.fillText('${pct}%',cx,cy-r*0.28);
+    ctx.font=(H*0.09)+'px IBM Plex Mono,monospace';
+    ctx.fillStyle='#AAA69E';
+    ctx.textAlign='center';
+    ctx.fillText('0%',cx-r-sw/2,cy+H*0.1);
+    ctx.fillText('100%',cx+r+sw/2,cy+H*0.1);
+  })();
+  <\/script>`;
+  return{pct,f,html};
 }
 
 async function loadGS(){
