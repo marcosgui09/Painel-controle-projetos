@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Controle de Documentos</title>
+<title>Controle de Documentos · SE Londrina</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap');
@@ -26,6 +26,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .btn-retry{font-family:var(--mono);font-size:12px;padding:7px 14px;border:1px solid #791F1F;border-radius:6px;background:transparent;color:#791F1F;cursor:pointer;margin-right:8px}
 .btn-manual{font-family:var(--mono);font-size:12px;padding:7px 14px;border:1px solid var(--azul);border-radius:6px;background:var(--azul);color:#FDFCFA;cursor:pointer}
 #dashboard{display:none}
+/* TOPO */
 .page-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:1.5rem;padding-bottom:1.25rem;border-bottom:1px solid var(--borderL);flex-wrap:wrap;gap:1rem}
 .page-header h1{font-size:22px;font-weight:600;letter-spacing:-.02em}
 .page-header p{font-size:13px;color:var(--muted);margin-top:4px}
@@ -36,57 +37,52 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .btn-primary:hover{opacity:.85;color:#FDFCFA}
 .banner{background:#E8F0F8;border:1px solid #B5D0E8;border-radius:8px;padding:9px 16px;margin-bottom:1.25rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
 .banner span{font-size:12px;color:var(--azul);font-family:var(--mono)}
+/* MÉTRICAS */
 .metrics{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--borderL);border:1px solid var(--borderL);border-radius:10px;overflow:hidden;margin-bottom:1.25rem}
 .metric{background:var(--surface);padding:1.125rem 1.25rem}
 .metric-label{font-size:11px;color:var(--hint);font-family:var(--mono);text-transform:uppercase;letter-spacing:.08em;margin-bottom:7px}
 .metric-value{font-size:28px;font-weight:600;letter-spacing:-.02em;line-height:1}
 .metric-sub{font-size:11px;color:var(--hint);margin-top:5px;font-family:var(--mono)}
-.status-row{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:1.25rem}
-.sc{border-radius:8px;padding:.875rem 1rem;cursor:pointer;border:2px solid transparent;transition:all .15s}
-.sc:hover{filter:brightness(.96)}
-.sc.active{border-color:var(--azul)}
-.sc-count{font-size:22px;font-weight:600;letter-spacing:-.02em;line-height:1}
-.sc-label{font-size:11px;margin-top:5px;font-weight:500;opacity:.85}
-.sc-lib{background:#D8F3DC;color:#27500A}.sc-anal{background:#D6E4FF;color:#0C447C}
-.sc-pend{background:#FFF3CD;color:#633806}.sc-nlib{background:#FCEBEB;color:#791F1F}
-.sc-lcom{background:#EDE9FF;color:#3C3489}.sc-canc{background:#F1EFE8;color:#444441}
 .sec-label{font-size:11px;font-weight:500;color:var(--azul);margin-bottom:.875rem;font-family:var(--mono);text-transform:uppercase;letter-spacing:.06em;display:flex;align-items:center;gap:8px}
 .sec-label::after{content:'';flex:1;height:1px;background:var(--borderL)}
-/* FORNECEDORES */
-.forn-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:1.25rem}
-.forn-card{background:var(--surface);border:0.5px solid var(--borderL);border-radius:var(--border-radius-lg,10px);padding:1rem 1.25rem}
-.forn-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.875rem}
-.forn-name{font-size:12px;font-weight:500}
-.forn-pend{font-size:10px;padding:2px 8px;border-radius:10px;font-family:var(--mono)}
-.forn-bar-row{display:flex;align-items:center;gap:6px;margin-bottom:6px}
-.forn-lbl{font-size:10px;color:var(--muted);width:75px;flex-shrink:0;font-family:var(--mono)}
-.forn-track{flex:1;height:6px;background:var(--bg);border-radius:3px;overflow:hidden}
-.forn-fill{height:100%;border-radius:3px}
-.forn-val{font-size:10px;font-family:var(--mono);color:var(--muted);width:18px;text-align:right;flex-shrink:0}
-/* DISCIPLINAS */
-.disc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:1.25rem}
+/* DISCIPLINAS COM GAUGE */
+.disc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:1.25rem}
 .disc-card{background:var(--surface);border:0.5px solid var(--borderL);border-radius:10px;overflow:hidden}
-.disc-head{padding:.875rem 1.25rem;display:flex;align-items:center;justify-content:space-between}
-.disc-name{font-size:13px;font-weight:500}
-.disc-tot{font-size:10px;font-family:var(--mono);opacity:.7}
-.disc-body{padding:1rem 1.25rem}
-.dbar{margin-bottom:.75rem}
-.dbar-lbl{display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px}
-.dbar-lbl span:first-child{color:var(--muted)}
-.dbar-lbl span:last-child{font-family:var(--mono);font-weight:500}
-.dbar-track{height:7px;background:var(--bg);border-radius:3px;overflow:hidden}
-.dbar-fill{height:100%;border-radius:3px;transition:width .5s cubic-bezier(.4,0,.2,1)}
-.disc-div{height:1px;background:var(--borderL);margin:.75rem 0}
+.disc-gauge-area{display:flex;flex-direction:column;align-items:center;padding:1rem 1rem .5rem}
+.disc-nome{font-size:13px;font-weight:500;color:var(--text);align-self:flex-start;margin-bottom:.5rem}
+.gauge-badge{display:flex;align-items:center;gap:5px;font-size:11px;font-family:var(--mono);font-weight:500;padding:3px 10px;border-radius:20px;margin-top:.375rem}
+.gauge-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.disc-sep{height:1px;background:var(--borderL);margin:0 1rem}
+.disc-body{padding:.875rem 1rem}
+.brow{margin-bottom:.625rem}
+.brow:last-child{margin-bottom:0}
+.blbl{display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px}
+.blbl-txt{color:var(--muted)}
+.blbl-val{font-family:var(--mono);font-weight:500;color:var(--text)}
+.btrack{height:10px;background:var(--bg);border-radius:5px;overflow:hidden}
+.bfill{height:100%;border-radius:5px;transition:width .5s cubic-bezier(.4,0,.2,1)}
+/* LINHA INFERIOR */
+.linha-inferior{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1.25rem}
+.card{background:var(--surface);border:0.5px solid var(--borderL);border-radius:10px;padding:1rem 1.25rem}
+.card-titulo{font-size:12px;font-weight:500;color:var(--text);margin-bottom:.875rem}
 /* ALERTAS */
-.alerts-card{background:#FCEBEB;border:1px solid #F09595;border-radius:10px;padding:1.125rem 1.25rem;margin-bottom:1.25rem}
-.alerts-title{font-size:11px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.08em;color:#791F1F;margin-bottom:.875rem}
-.alert-item{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(121,31,31,.1);gap:1rem}
-.alert-item:last-child{border-bottom:none}
-.alert-cod{font-family:var(--mono);font-size:11px;color:#791F1F;flex-shrink:0}
-.alert-tit{font-size:12px;color:#791F1F;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.alert-dias{font-size:11px;color:#791F1F;opacity:.7;flex-shrink:0;font-family:var(--mono)}
+.alerta-item{display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:var(--bg);border-left:2px solid #E24B4A;margin-bottom:6px}
+.alerta-item:last-child{margin-bottom:0}
+.alerta-cod{font-size:11px;font-family:var(--mono);color:#791F1F;flex-shrink:0;padding-top:1px}
+.alerta-txt{font-size:12px;color:var(--muted);flex:1;line-height:1.4}
+.alerta-tag{font-size:10px;font-family:var(--mono);padding:2px 6px;background:#FCEBEB;color:#791F1F;flex-shrink:0}
+.sem-alertas{font-size:12px;color:var(--hint);font-family:var(--mono);text-align:center;padding:1.5rem 0}
+/* EMISSÕES */
+.emis-item{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:0.5px solid var(--borderL);gap:8px}
+.emis-item:last-child{border-bottom:none}
+.emis-cod{font-size:11px;font-family:var(--mono);color:var(--hint);flex-shrink:0}
+.emis-txt{font-size:12px;color:var(--text);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.emis-forn{font-size:11px;font-family:var(--mono);color:var(--muted);flex-shrink:0}
+.emis-data{font-size:11px;font-family:var(--mono);color:var(--hint);flex-shrink:0}
+.emis-badge{font-size:10px;font-family:var(--mono);padding:2px 7px;border-radius:3px;flex-shrink:0;font-weight:500}
+.sem-emis{font-size:12px;color:var(--hint);font-family:var(--mono);text-align:center;padding:1.5rem 0}
 /* TABELA */
-.tbl-section{background:var(--surface);border:1px solid var(--borderL);border-radius:10px;overflow:hidden}
+.tbl-section{background:var(--surface);border:1px solid var(--borderL);border-radius:10px;overflow:hidden;margin-bottom:1.25rem}
 .tbl-top{padding:1rem 1.25rem;border-bottom:1px solid var(--borderL)}
 .filter-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px}
 .filter-label{font-size:11px;font-family:var(--mono);color:var(--hint);min-width:72px;white-space:nowrap}
@@ -116,13 +112,13 @@ tbody tr:hover td{background:var(--bg)}
 .al:hover{border-color:var(--azul);color:var(--azul)}
 .es{text-align:center;padding:3rem;color:var(--hint);font-size:13px;font-family:var(--mono)}
 .footer{text-align:center;padding:1.5rem;font-size:11px;color:var(--hint);font-family:var(--mono)}
-@media(max-width:900px){.metrics{grid-template-columns:repeat(2,1fr)}.status-row{grid-template-columns:repeat(3,1fr)}.disc-grid,.forn-grid{grid-template-columns:1fr}.container{padding:1rem}}
-@media(max-width:600px){.status-row{grid-template-columns:repeat(2,1fr)}.metrics{grid-template-columns:1fr 1fr}}
+@media(max-width:900px){.metrics{grid-template-columns:repeat(2,1fr)}.disc-grid,.linha-inferior{grid-template-columns:1fr}.container{padding:1rem}}
+@media(max-width:600px){.metrics{grid-template-columns:1fr 1fr}}
 </style>
 </head>
 <body>
 <div class="topbar">
-  <span class="topbar-title">CONTROLE DE DOCUMENTOS</span>
+  <span class="topbar-title">CONTROLE DE DOCUMENTOS · SE LONDRINA</span>
   <div class="topbar-right">
     <span class="topbar-meta" id="tMeta">Carregando...</span>
     <button class="btn-sm" id="btnAt" onclick="loadGS()" style="display:none">↺ Atualizar</button>
@@ -151,20 +147,28 @@ tbody tr:hover td{background:var(--bg)}
       </div>
     </div>
     <div class="banner"><span id="banMsg"></span><span style="opacity:.6">Google Sheets — atualiza automaticamente</span></div>
+
+    <!-- MÉTRICAS -->
     <div class="metrics" id="mRow"></div>
-    <div class="status-row" id="sRow"></div>
 
-    <div class="sec-label">Fornecedores de fabricação com pendências</div>
-    <div class="forn-grid" id="fornGrid"></div>
-
-    <div class="sec-label">Acompanhamento por disciplina</div>
+    <!-- DISCIPLINAS COM GAUGE -->
+    <div class="sec-label">Saúde por disciplina</div>
     <div class="disc-grid" id="discGrid"></div>
 
-    <div class="alerts-card" id="aCard" style="display:none">
-      <div class="alerts-title" id="aTitle"></div>
-      <div id="aList"></div>
+    <!-- LINHA INFERIOR: ALERTAS + EMISSÕES -->
+    <div class="linha-inferior">
+      <div class="card">
+        <div class="card-titulo">Documentos críticos · não liberados de fornecedores</div>
+        <div id="alertaLista"></div>
+      </div>
+      <div class="card">
+        <div class="card-titulo">Próximas emissões previstas · sem emissão registrada</div>
+        <div id="emisLista"></div>
+      </div>
     </div>
 
+    <!-- TABELA -->
+    <div class="sec-label">Lista completa de documentos</div>
     <div class="tbl-section">
       <div class="tbl-top">
         <div class="filter-row"><span class="filter-label">Status:</span><div id="cStat" style="display:flex;gap:6px;flex-wrap:wrap"></div></div>
@@ -179,30 +183,62 @@ tbody tr:hover td{background:var(--bg)}
         <table><thead><tr><th>Código</th><th>Título</th><th>Fornecedor</th><th>Disciplina</th><th>Rev.</th><th>Previsto</th><th>Emissão</th><th>Status</th><th>ACC</th></tr></thead><tbody id="tBody"></tbody></table>
       </div>
     </div>
-    <div class="footer">Sincronizado com Google Sheets · Atualiza automaticamente a cada abertura</div>
+    <div class="footer">Sincronizado com Google Sheets · RM2 Engenharia · SE Londrina</div>
   </div>
 </div>
 
 <script>
 const GS='https://docs.google.com/spreadsheets/d/1VzEkjB-MbJVwIFK0RsRoK-1N-95cjXUIwa0yJWSqpvQ/export?format=xlsx';
 
-// Critérios exatos da aba TABELAS
 const DISC_GRUPOS={
-  Civil:{discs:['civil','Civil'],cor:'#0D2B4E',bg:'#E8F0F8'},
-  Eletromecânico:{discs:['Eletromecânico','eletromecânico','Fabricação','fabricação'],cor:'#1A4A7A',bg:'#EBF5FB'},
-  Elétrico:{discs:['Elétrico','elétrico','Telecomunicação','telecomunicação'],cor:'#1B5E35',bg:'#EAF3DE'},
+  Civil:{discs:['civil','Civil'],cor:'#0D2B4E',bg:'#E8F0F8',txtCor:'#0C447C'},
+  Eletromecânico:{discs:['Eletromecânico','eletromecânico','Fabricação','fabricação'],cor:'#1A4A7A',bg:'#EBF5FB',txtCor:'#185FA5'},
+  Elétrico:{discs:['Elétrico','elétrico','Telecomunicação','telecomunicação'],cor:'#1B5E35',bg:'#EAF3DE',txtCor:'#3B6D11'},
 };
 const FORN_FABRIC=['TEKSEA','HUBBELL','BLUTRAFOS','ELETELE','HDS','GERMER','CST','DELTASTAR'];
 
-const SC={'Liberado':{cls:'b-lib',sc:'sc-lib',l:'Liberado'},'Em análise':{cls:'b-anal',sc:'sc-anal',l:'Em análise'},'Pendente de emissão':{cls:'b-pend',sc:'sc-pend',l:'Pendente de emissão'},'Não liberado':{cls:'b-nlib',sc:'sc-nlib',l:'Não liberado'},'Liberado com comentários':{cls:'b-lcom',sc:'sc-lcom',l:'Lib. c/ comentários'},'Cancelado':{cls:'b-canc',sc:'sc-canc',l:'Cancelado'}};
+const SC={'Liberado':{cls:'b-lib',l:'Liberado'},'Em análise':{cls:'b-anal',l:'Em análise'},'Pendente de emissão':{cls:'b-pend',l:'Pendente de emissão'},'Não liberado':{cls:'b-nlib',l:'Não liberado'},'Liberado com comentários':{cls:'b-lcom',l:'Lib. c/ comentários'},'Cancelado':{cls:'b-canc',l:'Cancelado'}};
 const SO=Object.keys(SC);
 let rows=[],fil={s:'Todos',d:'Todas',f:'Todos'},srch='';
 
-function gc(s){if(!s)return{cls:'b-canc',sc:'sc-canc',l:'—'};for(const k of SO)if(s.toLowerCase().includes(k.toLowerCase()))return SC[k];return{cls:'b-canc',sc:'sc-canc',l:s}}
+function gc(s){if(!s)return{cls:'b-canc',l:'—'};for(const k of SO)if(s.toLowerCase().includes(k.toLowerCase()))return SC[k];return{cls:'b-canc',l:s}}
 function fd(v){if(!v||v==='')return'—';const d=new Date(v);return isNaN(d)?String(v).slice(0,10):d.toLocaleDateString('pt-BR')}
 function td(v){if(!v)return null;const d=new Date(v);return isNaN(d)?null:d}
 function gf(){return rows.filter(r=>{if(fil.s!=='Todos'&&r.s!==fil.s)return false;if(fil.d!=='Todas'&&r.d!==fil.d)return false;if(fil.f!=='Todos'&&r.f!==fil.f)return false;if(srch&&!r.c.toLowerCase().includes(srch)&&!r.t.toLowerCase().includes(srch))return false;return true})}
 function mr(r){return{c:String(r[0]||'').trim(),rv:String(r[1]||'').trim(),f:String(r[2]||'').trim(),t:String(r[3]||'').trim(),d:String(r[4]||'').trim(),pv:r[6]?String(r[6]):'',em:r[9]?String(r[9]):'',s:String(r[11]||'').trim(),lk:String(r[25]||'').trim()}}
+
+function farolInfo(pct){
+  if(pct>=75)return{cor:'#2E9957',bg:'#D8F3DC',txt:'#27500A',label:'Saudável'};
+  if(pct>=50)return{cor:'#E09040',bg:'#FFF3CD',txt:'#633806',label:'Atenção'};
+  return{cor:'#C0504D',bg:'#FCEBEB',txt:'#791F1F',label:'Crítico'};
+}
+
+function buildGauge(aprov,anal,tot){
+  const W=180,H=100,cx=90,cy=90,r=68,sw=14;
+  const pAp=aprov/tot, pAn=anal/tot, pRest=Math.max(0,1-pAp-pAn);
+  function pt(pct,radius){const a=Math.PI+pct*Math.PI;return[cx+radius*Math.cos(a),cy+radius*Math.sin(a)]}
+  function arcSeg(s,e,color){
+    if(e-s<0.001)return'';
+    const[x1,y1]=pt(s,r),[x2,y2]=pt(e,r);
+    const lg=(e-s)>0.5?1:0;
+    return`<path d="M${x1.toFixed(2)},${y1.toFixed(2)} A${r},${r} 0 ${lg},1 ${x2.toFixed(2)},${y2.toFixed(2)}" fill="none" stroke="${color}" stroke-width="${sw}" stroke-linecap="butt"/>`;
+  }
+  const[bx1,by1]=pt(0,r),[bx2,by2]=pt(1,r);
+  const bg=`<path d="M${bx1.toFixed(2)},${by1.toFixed(2)} A${r},${r} 0 0,1 ${bx2.toFixed(2)},${by2.toFixed(2)}" fill="none" stroke="#E8E4DC" stroke-width="${sw}" stroke-linecap="butt"/>`;
+  const segs=bg+arcSeg(0,pAp,'#2E9957')+arcSeg(pAp,pAp+pAn,'#185FA5')+arcSeg(pAp+pAn,1,'#E24B4A');
+  const[nx,ny]=pt(pAp,r-8);
+  const pct=Math.round(pAp*100);
+  const f=farolInfo(pct);
+  const[lx,ly]=pt(0,r+10),[rx2,ry2]=pt(1,r+10);
+  return{pct,f,svg:`<svg viewBox="0 0 ${W} ${H}" width="100%" xmlns="http://www.w3.org/2000/svg">
+    ${segs}
+    <line x1="${cx}" y1="${cy}" x2="${nx.toFixed(2)}" y2="${ny.toFixed(2)}" stroke="#0D2B4E" stroke-width="2.5" stroke-linecap="round"/>
+    <circle cx="${cx}" cy="${cy}" r="4.5" fill="#0D2B4E"/>
+    <text x="${cx}" y="${cy-22}" text-anchor="middle" font-size="19" font-weight="500" fill="${f.cor}" font-family="IBM Plex Mono,monospace">${pct}%</text>
+    <text x="${lx.toFixed(2)}" y="${(ly+10).toFixed(2)}" text-anchor="middle" font-size="9" fill="#AAA69E" font-family="IBM Plex Mono,monospace">0%</text>
+    <text x="${rx2.toFixed(2)}" y="${(ry2+10).toFixed(2)}" text-anchor="middle" font-size="9" fill="#AAA69E" font-family="IBM Plex Mono,monospace">100%</text>
+  </svg>`};
+}
 
 async function loadGS(){
   document.getElementById('loadingSection').style.display='flex';
@@ -257,79 +293,105 @@ function init(data,fonte){
   rAll();
 }
 
-window.setF=function(t,v){const df={s:'Todos',d:'Todas',f:'Todos'};fil[t]=fil[t]===v?df[t]:v;rStat();rChips();rTbl();rAF()};
+window.setF=function(t,v){const df={s:'Todos',d:'Todas',f:'Todos'};fil[t]=fil[t]===v?df[t]:v;rChips();rTbl();rAF()};
 
-function rAll(){rMet();rStat();rForn();rDisc();rAlerts();rChips();rTbl();rAF()}
+function rAll(){rMet();rDisc();rAlertas();rEmissoes();rChips();rTbl();rAF()}
 
 function rMet(){
   const t=rows.length,bS={};rows.forEach(r=>{bS[r.s]=(bS[r.s]||0)+1});
   const lib=bS['Liberado']||0,an=bS['Em análise']||0,pe=bS['Pendente de emissão']||0,nl=bS['Não liberado']||0;
-  document.getElementById('mRow').innerHTML=[{l:'Total',v:t,s:'documentos',c:'var(--text)'},{l:'Liberados',v:lib,s:Math.round(lib/t*100)+'%',c:'#267A47'},{l:'Em análise',v:an,s:Math.round(an/t*100)+'%',c:'#2E6FAD'},{l:'Pendentes',v:pe,s:Math.round(pe/t*100)+'%',c:'#633806'},{l:'Não liberados',v:nl,s:Math.round(nl/t*100)+'%',c:'#791F1F'}].map(d=>`<div class="metric"><div class="metric-label">${d.l}</div><div class="metric-value" style="color:${d.c}">${d.v}</div><div class="metric-sub">${d.s}</div></div>`).join('');
-}
-
-function rStat(){
-  const bS={};rows.forEach(r=>{bS[r.s]=(bS[r.s]||0)+1});
-  document.getElementById('sRow').innerHTML=SO.map(s=>{const cnt=bS[s]||0;if(!cnt)return'';const c=SC[s];return`<div class="sc ${c.sc}${fil.s===s?' active':''}" onclick="setF('s','${s}')"><div class="sc-count">${cnt}</div><div class="sc-label">${c.l}</div></div>`}).join('');
-}
-
-function rForn(){
-  const fornRows=rows.filter(r=>FORN_FABRIC.includes(r.f));
-  const byForn={};
-  fornRows.forEach(r=>{if(!byForn[r.f])byForn[r.f]={lib:0,anal:0,pend:0,nlib:0,lcom:0,canc:0,tot:0};byForn[r.f].tot++;if(r.s==='Liberado')byForn[r.f].lib++;else if(r.s==='Em análise')byForn[r.f].anal++;else if(r.s==='Pendente de emissão')byForn[r.f].pend++;else if(r.s==='Não liberado')byForn[r.f].nlib++;else if(r.s==='Liberado com comentários')byForn[r.f].lcom++;else if(r.s==='Cancelado')byForn[r.f].canc++});
-  const entries=Object.entries(byForn).filter(([,v])=>v.tot>0).sort((a,b)=>(b[1].pend+b[1].nlib+b[1].anal)-(a[1].pend+a[1].nlib+a[1].anal));
-  if(!entries.length){document.getElementById('fornGrid').innerHTML=`<div style="font-size:12px;color:var(--muted);font-family:var(--mono);grid-column:1/-1">Sem fornecedores de fabricação com dados</div>`;return}
-  document.getElementById('fornGrid').innerHTML=entries.map(([nome,d])=>{
-    const pend=d.pend+d.nlib+d.anal;
-    const badgeBg=pend>5?'#FCEBEB':pend>0?'#FFF3CD':'#D8F3DC';
-    const badgeFt=pend>5?'#791F1F':pend>0?'#633806':'#27500A';
-    const max=d.tot||1;
-    return`<div class="forn-card">
-      <div class="forn-header">
-        <span class="forn-name">${nome}</span>
-        <span class="forn-pend" style="background:${badgeBg};color:${badgeFt}">${pend} pendentes</span>
-      </div>
-      <div class="forn-bar-row"><span class="forn-lbl">Liberado</span><div class="forn-track"><div class="forn-fill" style="width:${Math.round(d.lib/max*100)}%;background:#267A47"></div></div><span class="forn-val">${d.lib}</span></div>
-      <div class="forn-bar-row"><span class="forn-lbl">Em análise</span><div class="forn-track"><div class="forn-fill" style="width:${Math.round(d.anal/max*100)}%;background:#2E6FAD"></div></div><span class="forn-val">${d.anal}</span></div>
-      <div class="forn-bar-row"><span class="forn-lbl">Pendente</span><div class="forn-track"><div class="forn-fill" style="width:${Math.round(d.pend/max*100)}%;background:#E09040"></div></div><span class="forn-val">${d.pend}</span></div>
-      <div class="forn-bar-row"><span class="forn-lbl">Não liberado</span><div class="forn-track"><div class="forn-fill" style="width:${Math.round(d.nlib/max*100)}%;background:#C0504D"></div></div><span class="forn-val">${d.nlib}</span></div>
-    </div>`;
-  }).join('');
+  const pLib=t?Math.round(lib/t*100):0;
+  document.getElementById('mRow').innerHTML=[
+    {l:'Total',v:t,s:'documentos',c:'var(--text)'},
+    {l:'Aprovados',v:lib,s:pLib+'% do total',c:'#2E9957'},
+    {l:'Em análise',v:an,s:'aguardando retorno',c:'#185FA5'},
+    {l:'Pend. emissão',v:pe,s:'não emitidos',c:'#E09040'},
+    {l:'Não liberados',v:nl,s:'requerem ação',c:'#C0504D'},
+  ].map(d=>`<div class="metric"><div class="metric-label">${d.l}</div><div class="metric-value" style="color:${d.c}">${d.v}</div><div class="metric-sub">${d.s}</div></div>`).join('');
 }
 
 function rDisc(){
   document.getElementById('discGrid').innerHTML=Object.entries(DISC_GRUPOS).map(([nome,cfg])=>{
     const dr=rows.filter(r=>cfg.discs.some(d=>r.d.toLowerCase()===d.toLowerCase()));
     const tot=dr.length;
-    if(!tot)return`<div class="disc-card"><div class="disc-head" style="background:${cfg.bg}"><span class="disc-name" style="color:${cfg.cor}">${nome}</span><span class="disc-tot" style="color:${cfg.cor}">0 docs</span></div><div class="disc-body"><p style="font-size:12px;color:var(--hint);text-align:center;padding:1rem">Sem documentos</p></div></div>`;
-    const em=dr.filter(r=>r.em).length;
-    const ap=dr.filter(r=>r.s==='Liberado').length;
-    const nap=dr.filter(r=>r.s!=='Liberado'&&r.s!=='Cancelado').length;
-    const pEm=Math.round(em/tot*100);
-    const pAp=Math.round(ap/tot*100);
-    const pNap=Math.round(nap/tot*100);
+    if(!tot)return`<div class="disc-card"><div class="disc-gauge-area"><div class="disc-nome">${nome}</div><p style="font-size:12px;color:var(--hint);padding:1rem 0;font-family:var(--mono)">Sem documentos</p></div></div>`;
+    const aprov=dr.filter(r=>r.s==='Liberado').length;
+    const anal=dr.filter(r=>r.s==='Em análise').length;
+    const emit=dr.filter(r=>r.em&&r.em!=='').length;
+    const pend=dr.filter(r=>r.s==='Pendente de emissão'||r.s==='Não liberado').length;
+    const{pct,f,svg}=buildGauge(aprov,anal,tot);
+    const pAp=Math.round(aprov/tot*100);
+    const pEm=Math.round(emit/tot*100);
+    const pPend=Math.round(pend/tot*100);
     return`<div class="disc-card">
-      <div class="disc-head" style="background:${cfg.bg}">
-        <span class="disc-name" style="color:${cfg.cor}">${nome}</span>
-        <span class="disc-tot" style="color:${cfg.cor}">${tot} docs</span>
+      <div class="disc-gauge-area">
+        <div class="disc-nome">${nome}</div>
+        ${svg}
+        <div class="gauge-badge" style="background:${f.bg};color:${f.txt}">
+          <div class="gauge-dot" style="background:${f.cor}"></div>${f.label}
+        </div>
       </div>
+      <div class="disc-sep"></div>
       <div class="disc-body">
-        <div class="dbar"><div class="dbar-lbl"><span>Emitido</span><span style="color:${cfg.cor}">${em}/${tot} · ${pEm}%</span></div><div class="dbar-track"><div class="dbar-fill" style="width:${pEm}%;background:${cfg.cor}"></div></div></div>
-        <div class="dbar"><div class="dbar-lbl"><span>Não emitido</span><span style="color:var(--muted)">${tot-em}/${tot} · ${100-pEm}%</span></div><div class="dbar-track"><div class="dbar-fill" style="width:${100-pEm}%;background:#C4D0DB"></div></div></div>
-        <div class="disc-div"></div>
-        <div class="dbar"><div class="dbar-lbl"><span>Aprovado</span><span style="color:#267A47">${ap}/${tot} · ${pAp}%</span></div><div class="dbar-track"><div class="dbar-fill" style="width:${pAp}%;background:#267A47"></div></div></div>
-        <div class="dbar"><div class="dbar-lbl"><span>Não aprovado</span><span style="color:#C0504D">${nap}/${tot} · ${pNap}%</span></div><div class="dbar-track"><div class="dbar-fill" style="width:${pNap}%;background:#C0504D"></div></div></div>
+        <div class="brow">
+          <div class="blbl"><span class="blbl-txt">Aprovado</span><span class="blbl-val" style="color:#2E9957">${aprov}/${tot} · ${pAp}%</span></div>
+          <div class="btrack"><div class="bfill" style="width:${pAp}%;background:#2E9957"></div></div>
+        </div>
+        <div class="brow">
+          <div class="blbl"><span class="blbl-txt">Emitido</span><span class="blbl-val">${emit}/${tot} · ${pEm}%</span></div>
+          <div class="btrack"><div class="bfill" style="width:${pEm}%;background:#0D2B4E"></div></div>
+        </div>
+        <div class="brow">
+          <div class="blbl"><span class="blbl-txt">Pendente / análise</span><span class="blbl-val" style="color:#C0504D">${pend+anal}/${tot} · ${Math.round((pend+anal)/tot*100)}%</span></div>
+          <div class="btrack"><div class="bfill" style="width:${Math.round((pend+anal)/tot*100)}%;background:#C0504D"></div></div>
+        </div>
       </div>
     </div>`;
   }).join('');
 }
 
-function rAlerts(){
-  const today=new Date(),at=rows.filter(r=>{if(r.em)return false;const d=td(r.pv);return d&&d<today});
-  const card=document.getElementById('aCard');
-  if(!at.length){card.style.display='none';return}
-  card.style.display='block';
-  document.getElementById('aTitle').textContent=`${at.length} documento${at.length>1?'s':''} atrasado${at.length>1?'s':''} sem emissão`;
-  document.getElementById('aList').innerHTML=at.slice(0,10).map(r=>{const d=td(r.pv);const dias=Math.round((today-d)/86400000);return`<div class="alert-item"><span class="alert-cod">${r.c.slice(0,30)}</span><span class="alert-tit" title="${r.t}">${r.t}</span><span class="alert-dias">${dias}d · ${r.f}</span></div>`}).join('');
+function rAlertas(){
+  const criticos=rows.filter(r=>
+    FORN_FABRIC.includes(r.f) &&
+    (r.s==='Não liberado'||r.s==='Em análise') &&
+    !r.em
+  ).slice(0,5);
+  const el=document.getElementById('alertaLista');
+  if(!criticos.length){el.innerHTML=`<div class="sem-alertas">Nenhum documento crítico no momento</div>`;return}
+  el.innerHTML=criticos.map(r=>`<div class="alerta-item">
+    <span class="alerta-cod">${r.c.slice(0,25)}</span>
+    <span class="alerta-txt" title="${r.t}">${r.t}</span>
+    <span class="alerta-tag">${r.f}</span>
+  </div>`).join('');
+}
+
+function rEmissoes(){
+  const today=new Date();
+  const proximas=rows
+    .filter(r=>{
+      if(r.em&&r.em!=='')return false;
+      if(r.s==='Cancelado'||r.s==='Liberado')return false;
+      const d=td(r.pv);
+      return d&&d>=today;
+    })
+    .sort((a,b)=>td(a.pv)-td(b.pv))
+    .slice(0,5);
+  const el=document.getElementById('emisLista');
+  if(!proximas.length){el.innerHTML=`<div class="sem-emis">Nenhuma emissão prevista cadastrada</div>`;return}
+  el.innerHTML=proximas.map(r=>{
+    const d=td(r.pv);
+    const dias=Math.round((d-today)/86400000);
+    const urg=dias<=7;
+    const bg=urg?'#FFF3CD':'#D8F3DC';
+    const ft=urg?'#633806':'#27500A';
+    return`<div class="emis-item">
+      <span class="emis-cod">${r.c.slice(0,20)}</span>
+      <span class="emis-txt" title="${r.t}">${r.t}</span>
+      <span class="emis-forn">${r.f}</span>
+      <span class="emis-data">${fd(r.pv)}</span>
+      <span class="emis-badge" style="background:${bg};color:${ft}">${dias}d</span>
+    </div>`;
+  }).join('');
 }
 
 function rChips(){
@@ -351,7 +413,11 @@ function rTbl(){
   document.getElementById('tCount').textContent=`${rs.length} documentos`;
   const tb=document.getElementById('tBody');
   if(!rs.length){tb.innerHTML=`<tr><td colspan="9" class="es">Nenhum documento encontrado</td></tr>`;return}
-  tb.innerHTML=rs.map(r=>{const c=gc(r.s);const lk=r.lk&&r.lk.startsWith('http')?`<a class="al" href="${r.lk}" target="_blank">↗ ACC</a>`:'—';return`<tr><td class="mc" title="${r.c}">${r.c}</td><td title="${r.t}">${r.t}</td><td>${r.f}</td><td>${r.d}</td><td class="mc">${r.rv}</td><td class="mc">${fd(r.pv)}</td><td class="mc">${fd(r.em)}</td><td><span class="badge ${c.cls}">${r.s||'—'}</span></td><td>${lk}</td></tr>`}).join('');
+  tb.innerHTML=rs.map(r=>{
+    const c=gc(r.s);
+    const lk=r.lk&&r.lk.startsWith('http')?`<a class="al" href="${r.lk}" target="_blank">↗ ACC</a>`:'—';
+    return`<tr><td class="mc" title="${r.c}">${r.c}</td><td title="${r.t}">${r.t}</td><td>${r.f}</td><td>${r.d}</td><td class="mc">${r.rv}</td><td class="mc">${fd(r.pv)}</td><td class="mc">${fd(r.em)}</td><td><span class="badge ${c.cls}">${r.s||'—'}</span></td><td>${lk}</td></tr>`;
+  }).join('');
 }
 
 function bTag(){const p=[];if(fil.f!=='Todos')p.push('_'+fil.f.replace(/\s/g,'-'));if(fil.d!=='Todas')p.push('_'+fil.d.replace(/\s/g,'-'));if(fil.s!=='Todos')p.push('_'+fil.s.replace(/[\s/]/g,'-'));return p.join('')||'_todos'}
