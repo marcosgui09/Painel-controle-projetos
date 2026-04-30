@@ -221,31 +221,22 @@ function farolInfo(pct){
 
 function buildGaugeSVG(aprov,anal,tot){
   const cl=v=>Math.min(1,Math.max(0,v));
-  const pAp=cl(aprov/tot), pAn=cl(anal/tot);
+  const pAp=cl(aprov/tot),pAn=cl(anal/tot);
   const pct=Math.round(pAp*100);
   const f=farolInfo(pct);
-  const cx=100,cy=90,r=76,sw=17;
-  function ptX(frac,rad){return cx+rad*Math.cos(Math.PI*(1+cl(frac)));}
-  function ptY(frac,rad){return cy+rad*Math.sin(Math.PI*(1+cl(frac)));}
-  function seg(s,e,color){
-    s=cl(s);e=cl(e);if(e-s<0.003)return'';
-    const x1=ptX(s,r),y1=ptY(s,r),x2=ptX(e,r),y2=ptY(e,r);
-    return`<path d="M${x1.toFixed(2)},${y1.toFixed(2)} A${r},${r} 0 ${(e-s)>.5?1:0},1 ${x2.toFixed(2)},${y2.toFixed(2)}" fill="none" stroke="${color}" stroke-width="${sw}" stroke-linecap="butt"/>`;
-  }
-  const bx1=ptX(0,r),by1=ptY(0,r),bx2=ptX(1,r),by2=ptY(1,r);
-  const nf=Math.min(0.98,Math.max(0.02,pAp));
-  const nx=ptX(nf,r-sw+2),ny=ptY(nf,r-sw+2);
-  const top=cy-r-sw/2-1;
-  const height=r+sw/2+18;
-  return{pct,f,svg:`<svg viewBox="0 ${top.toFixed(1)} 200 ${height.toFixed(1)}" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block">
-    <path d="M${bx1.toFixed(2)},${by1.toFixed(2)} A${r},${r} 0 0,1 ${bx2.toFixed(2)},${by2.toFixed(2)}" fill="none" stroke="#E8E4DC" stroke-width="${sw}" stroke-linecap="butt"/>
-    ${seg(0,pAp,'#2E9957')}${seg(pAp,pAp+pAn,'#185FA5')}${seg(pAp+pAn,1,'#E24B4A')}
-    <line x1="${cx}" y1="${cy}" x2="${nx.toFixed(2)}" y2="${ny.toFixed(2)}" stroke="#0D2B4E" stroke-width="2.5" stroke-linecap="round"/>
-    <circle cx="${cx}" cy="${cy}" r="5" fill="#0D2B4E"/>
-    <text x="${cx}" y="${(cy-22).toFixed(1)}" text-anchor="middle" font-size="17" font-weight="500" fill="${f.cor}" font-family="IBM Plex Mono,monospace">${pct}%</text>
-    <text x="${bx1.toFixed(1)}" y="${(by1+13).toFixed(1)}" text-anchor="middle" font-size="8" fill="#AAA69E" font-family="IBM Plex Mono,monospace">0%</text>
-    <text x="${bx2.toFixed(1)}" y="${(by2+13).toFixed(1)}" text-anchor="middle" font-size="8" fill="#AAA69E" font-family="IBM Plex Mono,monospace">100%</text>
-  </svg>`};
+  const pApP=Math.round(pAp*100),pAnP=Math.round(pAn*100),pReP=Math.round((1-pAp-pAn)*100);
+  const svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 110" style="width:100%;display:block">
+    <path d="M20,100 A80,80 0 0,1 180,100" fill="none" stroke="#E8E4DC" stroke-width="18" stroke-linecap="butt"/>
+    ${pAp>0.003?`<path d="M20,100 A80,80 0 ${pAp>0.5?1:0},1 ${(100+80*Math.cos(Math.PI*(1-pAp))).toFixed(2)},${(100-80*Math.sin(Math.PI*(1-pAp))).toFixed(2)}" fill="none" stroke="#2E9957" stroke-width="18" stroke-linecap="butt"/>`:''}
+    ${pAn>0.003?`<path d="M${(100+80*Math.cos(Math.PI*(1-pAp))).toFixed(2)},${(100-80*Math.sin(Math.PI*(1-pAp))).toFixed(2)} A80,80 0 ${pAn>0.5?1:0},1 ${(100+80*Math.cos(Math.PI*(1-pAp-pAn))).toFixed(2)},${(100-80*Math.sin(Math.PI*(1-pAp-pAn))).toFixed(2)}" fill="none" stroke="#185FA5" stroke-width="18" stroke-linecap="butt"/>`:''}
+    ${(1-pAp-pAn)>0.003?`<path d="M${(100+80*Math.cos(Math.PI*(1-pAp-pAn))).toFixed(2)},${(100-80*Math.sin(Math.PI*(1-pAp-pAn))).toFixed(2)} A80,80 0 ${(1-pAp-pAn)>0.5?1:0},1 180,100" fill="none" stroke="#E24B4A" stroke-width="18" stroke-linecap="butt"/>`:''}
+    <line x1="100" y1="100" x2="${(100+60*Math.cos(Math.PI*(1-pAp))).toFixed(2)}" y2="${(100-60*Math.sin(Math.PI*(1-pAp))).toFixed(2)}" stroke="#0D2B4E" stroke-width="2.5" stroke-linecap="round"/>
+    <circle cx="100" cy="100" r="5" fill="#0D2B4E"/>
+    <text x="100" y="78" text-anchor="middle" font-size="17" font-weight="500" fill="${f.cor}" font-family="IBM Plex Mono,monospace">${pct}%</text>
+    <text x="16" y="112" text-anchor="middle" font-size="8" fill="#AAA69E" font-family="IBM Plex Mono,monospace">0%</text>
+    <text x="184" y="112" text-anchor="middle" font-size="8" fill="#AAA69E" font-family="IBM Plex Mono,monospace">100%</text>
+  </svg>`;
+  return{pct,f,svg};
 }
 
 function gc(s){if(!s)return{cls:'b-canc'};for(const k of SO)if(s.toLowerCase().includes(k.toLowerCase()))return SC[k];return{cls:'b-canc'}}
