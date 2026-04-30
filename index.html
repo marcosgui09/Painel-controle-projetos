@@ -119,7 +119,7 @@ tbody tr:hover td{background:var(--bg)}
 <body>
 <div class="topbar">
   <div style="display:flex;align-items:center;gap:12px">
-    <img src="https://www.rm2engenharia.com.br/img/Logo.png" alt="RM2 Engenharia" style="height:30px;filter:brightness(0) invert(1);opacity:.9">
+    <img src="https://www.rm2engenharia.com.br/img/Logo.png" alt="RM2 Engenharia" style="height:30px">
     <span class="topbar-title">CONTROLE DE DOCUMENTOS · SE LONDRINA</span>
   </div>
   <div class="topbar-right">
@@ -239,18 +239,15 @@ function buildGauge(aprov,anal,tot){
   const pAn=clamp(anal/tot);
   const pct=Math.round(pAp*100);
   const f=farolInfo(pct);
-  const id='g'+Math.random().toString(36).slice(2);
-  const html=`<div style="position:relative;width:100%;padding-bottom:55%">
-    <canvas id="${id}" style="position:absolute;top:0;left:0;width:100%;height:100%"></canvas>
-  </div>
-  <script>
-  (function(){
-    var c=document.getElementById('${id}');
-    var W=c.offsetWidth||300,H=Math.round(W*0.55);
+  const id='g'+Math.random().toString(36).slice(2,8);
+  setTimeout(function(){
+    const c=document.getElementById(id);
+    if(!c)return;
+    const W=c.offsetWidth,H=c.offsetHeight;
     c.width=W*2;c.height=H*2;
-    var ctx=c.getContext('2d');
+    const ctx=c.getContext('2d');
     ctx.scale(2,2);
-    var cx=W/2,cy=H*0.88,r=H*0.72,sw=r*0.22;
+    const cx=W/2,cy=H*0.88,r=H*0.7,sw=r*0.22;
     function arc(s,e,color){
       if(e-s<0.003)return;
       ctx.beginPath();
@@ -258,28 +255,27 @@ function buildGauge(aprov,anal,tot){
       ctx.strokeStyle=color;ctx.lineWidth=sw;ctx.lineCap='butt';ctx.stroke();
     }
     arc(0,1,'#E8E4DC');
-    arc(0,${pAp},'#2E9957');
-    arc(${pAp},${pAp+pAn},'#185FA5');
-    arc(${pAp+pAn},1,'#E24B4A');
-    var nf=Math.min(0.98,Math.max(0.02,${pAp}));
-    var na=Math.PI*(1+nf);
-    var nl=r-sw*0.7;
+    if(pAp>0.003)arc(0,pAp,'#2E9957');
+    if(pAn>0.003)arc(pAp,pAp+pAn,'#185FA5');
+    if(1-pAp-pAn>0.003)arc(pAp+pAn,1,'#E24B4A');
+    const nf=Math.min(0.98,Math.max(0.02,pAp));
+    const na=Math.PI*(1+nf);
+    const nl=r-sw*0.7;
     ctx.beginPath();
     ctx.moveTo(cx,cy);
     ctx.lineTo(cx+nl*Math.cos(na),cy+nl*Math.sin(na));
-    ctx.strokeStyle='#0D2B4E';ctx.lineWidth=2;ctx.lineCap='round';ctx.stroke();
-    ctx.beginPath();ctx.arc(cx,cy,4,0,Math.PI*2);ctx.fillStyle='#0D2B4E';ctx.fill();
-    ctx.font='bold '+(H*0.18)+'px IBM Plex Mono,monospace';
-    ctx.fillStyle='${f.cor}';ctx.textAlign='center';
-    ctx.fillText('${pct}%',cx,cy-r*0.28);
+    ctx.strokeStyle='#0D2B4E';ctx.lineWidth=2.5;ctx.lineCap='round';ctx.stroke();
+    ctx.beginPath();ctx.arc(cx,cy,5,0,Math.PI*2);ctx.fillStyle='#0D2B4E';ctx.fill();
+    ctx.textAlign='center';
+    ctx.font='500 '+(H*0.19)+'px IBM Plex Mono,monospace';
+    ctx.fillStyle=f.cor;
+    ctx.fillText(pct+'%',cx,cy-r*0.3);
     ctx.font=(H*0.09)+'px IBM Plex Mono,monospace';
     ctx.fillStyle='#AAA69E';
-    ctx.textAlign='center';
-    ctx.fillText('0%',cx-r-sw/2,cy+H*0.1);
-    ctx.fillText('100%',cx+r+sw/2,cy+H*0.1);
-  })();
-  <\/script>`;
-  return{pct,f,html};
+    ctx.fillText('0%',cx-r-sw*0.6,cy+H*0.1);
+    ctx.fillText('100%',cx+r+sw*0.6,cy+H*0.1);
+  },100);
+  return{pct,f,html:`<canvas id="${id}" style="width:100%;height:130px;display:block"></canvas>`};
 }
 
 async function loadGS(){
