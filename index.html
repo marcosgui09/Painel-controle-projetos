@@ -233,51 +233,31 @@ function farolInfo(pct){
   return{cor:'#E09040',bg:'#FFF3CD',txt:'#633806',label:'Atenção'};
 }
 
-function drawGauge(id,pAp,pAn,cor){
-  const c=document.getElementById(id);
-  if(!c)return;
-  const W=c.clientWidth||300,H=130;
-  c.width=W*2;c.height=H*2;
-  const ctx=c.getContext('2d');
-  ctx.scale(2,2);
-  const cx=W/2,cy=110,r=85,sw=18;
-  function arc(s,e,color){
-    if(e-s<0.003)return;
-    ctx.beginPath();
-    ctx.arc(cx,cy,r,Math.PI*(1+s),Math.PI*(1+e));
-    ctx.strokeStyle=color;ctx.lineWidth=sw;ctx.lineCap='butt';ctx.stroke();
-  }
-  arc(0,1,'#E8E4DC');
-  if(pAp>0.003)arc(0,pAp,'#2E9957');
-  if(pAn>0.003)arc(pAp,pAp+pAn,'#185FA5');
-  if(1-pAp-pAn>0.003)arc(pAp+pAn,1,'#E24B4A');
-  const nf=Math.min(0.98,Math.max(0.02,pAp));
-  const na=Math.PI*(1+nf);
-  ctx.beginPath();
-  ctx.moveTo(cx,cy);
-  ctx.lineTo(cx+(r-sw)*Math.cos(na),cy+(r-sw)*Math.sin(na));
-  ctx.strokeStyle='#0D2B4E';ctx.lineWidth=2.5;ctx.lineCap='round';ctx.stroke();
-  ctx.beginPath();ctx.arc(cx,cy,5,0,Math.PI*2);ctx.fillStyle='#0D2B4E';ctx.fill();
-  ctx.textAlign='center';
-  ctx.font='500 18px IBM Plex Mono,monospace';
-  ctx.fillStyle=cor;
-  ctx.fillText(Math.round(pAp*100)+'%',cx,cy-r*0.32);
-  ctx.font='10px IBM Plex Mono,monospace';
-  ctx.fillStyle='#AAA69E';
-  ctx.fillText('0%',cx-r-2,cy+14);
-  ctx.fillText('100%',cx+r+2,cy+14);
-}
-
 function buildGauge(aprov,anal,tot){
-  const clamp=v=>Math.min(1,Math.max(0,v));
-  const pAp=clamp(aprov/tot);
-  const pAn=clamp(anal/tot);
+  const c=v=>Math.min(1,Math.max(0,v));
+  const pAp=c(aprov/tot),pAn=c(anal/tot);
   const pct=Math.round(pAp*100);
   const f=farolInfo(pct);
-  const id='g'+Math.random().toString(36).slice(2,8);
-  window._gauges=window._gauges||[];
-  window._gauges.push([id,pAp,pAn,f.cor]);
-  return{pct,f,html:`<canvas id="${id}" style="width:100%;height:130px;display:block"></canvas>`};
+  const cx=100,cy=85,r=72,sw=16;
+  function pt(frac,rad){const a=Math.PI*(1+c(frac));return[cx+rad*Math.cos(a),cy+rad*Math.sin(a)];}
+  function seg(s,e,color){
+    s=c(s);e=c(e);if(e-s<0.003)return'';
+    const[x1,y1]=pt(s,r),[x2,y2]=pt(e,r);
+    return`<path d="M${x1.toFixed(2)},${y1.toFixed(2)} A${r},${r} 0 ${(e-s)>.5?1:0},1 ${x2.toFixed(2)},${y2.toFixed(2)}" fill="none" stroke="${color}" stroke-width="${sw}" stroke-linecap="butt"/>`;
+  }
+  const[bx1,by1]=pt(0,r),[bx2,by2]=pt(1,r);
+  const nf=Math.min(0.98,Math.max(0.02,pAp));
+  const[nx,ny]=pt(nf,r-sw);
+  const svg=`<svg viewBox="0 ${cy-r-sw/2-2} 200 ${r+sw/2+20}" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block">
+    <path d="M${bx1.toFixed(2)},${by1.toFixed(2)} A${r},${r} 0 0,1 ${bx2.toFixed(2)},${by2.toFixed(2)}" fill="none" stroke="#E8E4DC" stroke-width="${sw}" stroke-linecap="butt"/>
+    ${seg(0,pAp,'#2E9957')}${seg(pAp,pAp+pAn,'#185FA5')}${seg(pAp+pAn,1,'#E24B4A')}
+    <line x1="${cx}" y1="${cy}" x2="${nx.toFixed(2)}" y2="${ny.toFixed(2)}" stroke="#0D2B4E" stroke-width="2.5" stroke-linecap="round"/>
+    <circle cx="${cx}" cy="${cy}" r="5" fill="#0D2B4E"/>
+    <text x="${cx}" y="${cy-20}" text-anchor="middle" font-size="16" font-weight="500" fill="${f.cor}" font-family="IBM Plex Mono,monospace">${pct}%</text>
+    <text x="${bx1.toFixed(2)}" y="${(by1+12).toFixed(2)}" text-anchor="middle" font-size="8" fill="#AAA69E" font-family="IBM Plex Mono,monospace">0%</text>
+    <text x="${bx2.toFixed(2)}" y="${(by2+12).toFixed(2)}" text-anchor="middle" font-size="8" fill="#AAA69E" font-family="IBM Plex Mono,monospace">100%</text>
+  </svg>`;
+  return{pct,f,html:svg};
 }
 
 async function loadGS(){
@@ -331,9 +311,7 @@ function init(data,fonte){
   document.getElementById('dashboard').style.display='block';
   document.getElementById('sIn').oninput=e=>{srch=e.target.value.toLowerCase();rTbl();rAF()};
   rAll();
-  setTimeout(function(){
-    (window._gauges||[]).forEach(function(g){drawGauge(g[0],g[1],g[2],g[3])});
-  },500);
+
   const shutdown=new Date('2026-05-25');
   const hoje=new Date();
   const diasSh=Math.round((shutdown-hoje)/86400000);
@@ -396,10 +374,6 @@ function rDisc(){
       </div>
     </div>`;
   }).join('');
-  setTimeout(function(){
-    (window._gauges||[]).forEach(function(g){drawGauge(g[0],g[1],g[2],g[3])});
-    window._gauges=[];
-  },300);
 }
 
 function rAlertas(){
