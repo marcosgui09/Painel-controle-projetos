@@ -331,9 +331,9 @@ function init(data,fonte){
   document.getElementById('dashboard').style.display='block';
   document.getElementById('sIn').oninput=e=>{srch=e.target.value.toLowerCase();rTbl();rAF()};
   rAll();
-  window.addEventListener('load',function(){
+  setTimeout(function(){
     (window._gauges||[]).forEach(function(g){drawGauge(g[0],g[1],g[2],g[3])});
-  });
+  },500);
   const shutdown=new Date('2026-05-25');
   const hoje=new Date();
   const diasSh=Math.round((shutdown-hoje)/86400000);
@@ -360,8 +360,7 @@ function rMet(){
 }
 
 function rDisc(){
-  document.getElementById('discGrid').innerHTML=Object.entries(DISC_GRUPOS).map(([nome,cfg])=>{
-    const dr=rows.filter(r=>cfg.discs.some(d=>r.d.toLowerCase()===d.toLowerCase()));
+  document.getElementById('discGrid').innerHTML=Object.entries(DISC_GRUPOS).map(([nome,cfg])=>{    const dr=rows.filter(r=>cfg.discs.some(d=>r.d.toLowerCase()===d.toLowerCase()));
     const tot=dr.length;
     if(!tot)return`<div class="disc-card"><div class="disc-gauge-area"><div class="disc-nome">${nome}</div><p style="font-size:12px;color:var(--hint);padding:1rem 0;font-family:var(--mono)">Sem documentos</p></div></div>`;
     const aprov=dr.filter(r=>r.s==='Liberado').length;
@@ -397,6 +396,10 @@ function rDisc(){
       </div>
     </div>`;
   }).join('');
+  setTimeout(function(){
+    (window._gauges||[]).forEach(function(g){drawGauge(g[0],g[1],g[2],g[3])});
+    window._gauges=[];
+  },300);
 }
 
 function rAlertas(){
