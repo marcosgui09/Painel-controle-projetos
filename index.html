@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Controle de Documentos · SE Londrina</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap');
 :root{--azul:#0D2B4E;--azul2:#1A4A7A;--azul3:#2E6FAD;--azul4:#5B96C8;--azul5:#8BAED1;--verde:#1B5E35;--verde2:#267A47;--verde3:#2E9957;--bg:#F4F2ED;--surface:#FDFCFA;--border:#D8D4CC;--borderL:#E8E4DC;--text:#1A1814;--muted:#7A7670;--hint:#AAA69E;--font:'IBM Plex Sans',sans-serif;--mono:'IBM Plex Mono',monospace}
@@ -142,6 +144,18 @@ tbody tr:hover td{background:var(--bg)}
   <div class="topbar-right">
     <span class="topbar-meta" id="tMeta">Carregando...</span>
     <button class="btn-sm" id="btnAt" onclick="loadGS()" style="display:none">↺ Atualizar</button>
+  </div>
+</div>
+
+<div id="loginSection" style="display:none">
+  <div class="login-card">
+    <img src="https://www.rm2engenharia.com.br/img/Logo.png" class="login-logo">
+    <div class="login-titulo">Controle de Documentos</div>
+    <div class="login-sub">SE Londrina · RM2 Engenharia</div>
+    <input class="login-input" type="email" id="loginEmail" placeholder="E-mail" autocomplete="email">
+    <input class="login-input" type="password" id="loginSenha" placeholder="Senha" autocomplete="current-password">
+    <button class="login-btn" onclick="fazerLogin()">Entrar</button>
+    <div class="login-err" id="loginErr">E-mail ou senha incorretos.</div>
   </div>
 </div>
 
@@ -439,6 +453,30 @@ window.imprimirRelatorio=function(){
   const fmt=now.toLocaleDateString('pt-BR')+' às '+now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
   document.getElementById('printDate').textContent='Gerado em: '+fmt;
   window.print();
+};
+
+const firebaseConfig={apiKey:"AIzaSyBoVA_e5vjckvzKc44g5A4DS5ZFbx3boI4",authDomain:"dashboard-projetos-rm2.firebaseapp.com",projectId:"dashboard-projetos-rm2",storageBucket:"dashboard-projetos-rm2.firebasestorage.app",messagingSenderId:"681381892681",appId:"1:681381892681:web:f58dd9dfa2cafb14fe6598"};
+firebase.initializeApp(firebaseConfig);
+const auth=firebase.auth();
+
+auth.onAuthStateChanged(function(user){
+  if(user){
+    document.getElementById('loginSection').style.display='none';
+    loadGS();
+  } else {
+    document.getElementById('loginSection').style.display='flex';
+    document.getElementById('loadingSection').style.display='none';
+    document.getElementById('dashboard').style.display='none';
+  }
+});
+
+window.fazerLogin=function(){
+  const email=document.getElementById('loginEmail').value;
+  const senha=document.getElementById('loginSenha').value;
+  const err=document.getElementById('loginErr');
+  err.style.display='none';
+  auth.signInWithEmailAndPassword(email,senha)
+    .catch(function(){err.style.display='block'});
 };
 
 loadGS();
