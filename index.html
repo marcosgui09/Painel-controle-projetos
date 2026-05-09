@@ -144,12 +144,12 @@ tbody tr:last-child td{border-bottom:none}
 tbody tr:hover td{background:var(--bg)}
 .mc{font-family:var(--mono);font-size:11px;color:var(--muted)}
 .badge{display:inline-block;font-size:10px;padding:2px 9px;border-radius:20px;font-weight:500;font-family:var(--mono);white-space:nowrap}
-.b-lib{background:#D8F3DC;color:#27500A}      /* Verde — Liberado */
-.b-anal{background:#FFF3CD;color:#633806}     /* Amarelo — Em análise */
-.b-pend{background:#FFE5CC;color:#7A3500}     /* Laranja — Pendente de emissão */
-.b-nlib{background:#FCEBEB;color:#791F1F}     /* Vermelho — Não liberado */
-.b-lcom{background:#EDE9FF;color:#3C3489}     /* Roxo — Lib. c/ comentários */
-.b-canc{background:#F1EFE8;color:#444441}     /* Cinza — Cancelado */
+.b-lib{background:#D8F3DC;color:#27500A}
+.b-anal{background:#FFF3CD;color:#633806}
+.b-pend{background:#FFE5CC;color:#7A3500}
+.b-nlib{background:#FCEBEB;color:#791F1F}
+.b-lcom{background:#EDE9FF;color:#3C3489}
+.b-canc{background:#F1EFE8;color:#444441}
 .al{display:inline-block;font-size:10px;padding:2px 7px;border:1px solid var(--border);border-radius:4px;color:var(--muted);text-decoration:none;font-family:var(--mono)}
 .al:hover{border-color:var(--azul);color:var(--azul)}
 .es{text-align:center;padding:3rem;color:var(--hint);font-size:13px;font-family:var(--mono)}
@@ -388,7 +388,11 @@ function buildGaugeSVG(aprov,anal,tot){
   </svg>`};
 }
 
-function gc(s){if(!s)return{cls:'b-canc'};for(const k of SO)if(s.toLowerCase().includes(k.toLowerCase()))return SC[k];return{cls:'b-canc'}}
+function gc(s){
+  if(!s)return{cls:'b-canc'};
+  const map={'Liberado':'b-lib','Em análise':'b-anal','Pendente de emissão':'b-pend','Não liberado':'b-nlib','Liberado com comentários':'b-lcom','Cancelado':'b-canc'};
+  return{cls:map[s.trim()]||'b-canc'};
+}
 function fd(v){if(!v||v==='')return'—';const d=new Date(v);return isNaN(d)?String(v).slice(0,10):d.toLocaleDateString('pt-BR')}
 function td(v){if(!v)return null;const d=new Date(v);return isNaN(d)?null:d}
 function gf(){return rows.filter(r=>{if(fil.s!=='Todos'&&r.s!==fil.s)return false;if(fil.d!=='Todas'&&r.d!==fil.d)return false;if(fil.f!=='Todos'&&r.f!==fil.f)return false;if(srch&&!r.c.toLowerCase().includes(srch)&&!r.t.toLowerCase().includes(srch))return false;return true})}
@@ -500,43 +504,44 @@ function rDisc(){
 
 function rAlertas(){
   const today=new Date();
-  // Pega docs não liberados com data prevista preenchida
+  // Documentos críticos: não liberados ou em análise, sem emissão, data prevista vencida ou em risco (<=30 dias)
   const criticos=rows
-    .filter(r=>r.s!=='Liberado'&&r.s!=='Cancelado'&&r.pv)
+    .filter(r=>{
+      if(r.s==='Liberado'||r.s==='Cancelado'||r.s==='Liberado com comentários')return false;
+      if(r.em&&r.em!=='')return false;
+      const d=td(r.pv);
+      if(!d)return false;
+      const dias=Math.round((d-today)/86400000);
+      return dias<=30; // vencidos ou dentro de 30 dias
+    })
     .map(r=>{
-      const dpv=td(r.pv);
-      if(!dpv)return null;
-      const diasRestantes=Math.round((dpv-today)/86400000);
-      // Tenta cruzar com cronograma pelo nome da tarefa
-      let refCron=null;
+      const d=td(r.pv);
+      const dias=Math.round((d-today)/86400000);
+      // Tenta cruzar com cronograma
       let diasCron=null;
       for(const [nome,termino] of Object.entries(cronDatas)){
-        // match simples por disciplina ou fornecedor
-        if(nome.includes(r.d.toLowerCase())||nome.includes(r.f.toLowerCase())){
+        if(nome.includes(r.d.toLowerCase())||nome.includes((r.f||'').toLowerCase())){
           diasCron=Math.round((termino-today)/86400000);
-          refCron=termino;
           break;
         }
       }
-      return{...r,dpv,diasRestantes,diasCron,refCron};
+      return{...r,dias,diasCron};
     })
-    .filter(Boolean)
-    .sort((a,b)=>a.diasRestantes-b.diasRestantes)
+    .sort((a,b)=>a.dias-b.dias)
     .slice(0,6);
 
   const el=document.getElementById('alertaLista');
   if(!criticos.length){el.innerHTML='<div class="sem-dados">Nenhum documento crítico no momento</div>';return}
 
   el.innerHTML=criticos.map(r=>{
-    // Define cor do alerta
     let bg,ft,label;
-    if(r.diasRestantes<0){bg='#FCEBEB';ft='#791F1F';label=`${Math.abs(r.diasRestantes)}d atrasado`}
-    else if(r.diasRestantes<=14){bg='#FFF3CD';ft='#633806';label=`${r.diasRestantes}d restantes`}
-    else{bg='#D8F3DC';ft='#27500A';label=`${r.diasRestantes}d restantes`}
+    if(r.dias<0){bg='#FCEBEB';ft='#791F1F';label=`${Math.abs(r.dias)}d atrasado`}
+    else if(r.dias<=7){bg='#FCEBEB';ft='#791F1F';label=`${r.dias}d restantes`}
+    else if(r.dias<=14){bg='#FFE5CC';ft='#7A3500';label=`${r.dias}d restantes`}
+    else{bg:'#FFF3CD';ft='#633806';label=`${r.dias}d restantes`}
 
-    // Se tem referência no cronograma
     const cronInfo=r.diasCron!==null
-      ?`<span style="font-size:10px;font-family:var(--mono);color:var(--hint);margin-left:4px">· obra: ${r.diasCron}d</span>`
+      ?`<span style="font-size:10px;font-family:var(--mono);color:var(--hint)"> · obra em ${r.diasCron}d</span>`
       :'';
 
     return`<div class="alerta-item" style="border-left-color:${ft}">
@@ -546,7 +551,7 @@ function rAlertas(){
           <span style="font-size:10px;font-family:var(--mono);padding:1px 6px;border-radius:3px;background:${bg};color:${ft};flex-shrink:0">${label}</span>
           ${cronInfo}
         </div>
-        <span class="alerta-txt">${r.t}</span>
+        <span class="alerta-txt" title="${r.t}">${r.t}</span>
       </div>
       <span class="alerta-tag" style="background:${bg};color:${ft}">${r.f||r.d}</span>
     </div>`;
@@ -555,10 +560,32 @@ function rAlertas(){
 
 function rEmissoes(){
   const today=new Date();
-  const proximas=rows.filter(r=>{if(r.em&&r.em!=='')return false;if(r.s==='Cancelado'||r.s==='Liberado')return false;const d=td(r.pv);return d&&d>=today}).sort((a,b)=>td(a.pv)-td(b.pv)).slice(0,5);
+  // Próximas emissões: docs sem emissão, não vencidos, data prevista futura > 30 dias
+  const proximas=rows
+    .filter(r=>{
+      if(r.em&&r.em!=='')return false;
+      if(r.s==='Cancelado'||r.s==='Liberado')return false;
+      const d=td(r.pv);
+      if(!d)return false;
+      const dias=Math.round((d-today)/86400000);
+      return dias>30; // só futuros além de 30 dias (os urgentes estão nos críticos)
+    })
+    .sort((a,b)=>td(a.pv)-td(b.pv))
+    .slice(0,5);
+
   const el=document.getElementById('emisLista');
   if(!proximas.length){el.innerHTML='<div class="sem-dados">Nenhuma emissão prevista cadastrada</div>';return}
-  el.innerHTML=proximas.map(r=>{const d=td(r.pv);const dias=Math.round((d-today)/86400000);const urg=dias<=7;return`<div class="emis-item"><span class="emis-cod">${r.c.slice(0,18)}</span><span class="emis-txt" title="${r.t}">${r.t}</span><span class="emis-forn">${r.f}</span><span class="emis-data">${fd(r.pv)}</span><span class="emis-badge" style="background:${urg?'#FFF3CD':'#D8F3DC'};color:${urg?'#633806':'#27500A'}">${dias}d</span></div>`;}).join('');
+  el.innerHTML=proximas.map(r=>{
+    const d=td(r.pv);
+    const dias=Math.round((d-today)/86400000);
+    return`<div class="emis-item">
+      <span class="emis-cod">${r.c.slice(0,18)}</span>
+      <span class="emis-txt" title="${r.t}">${r.t}</span>
+      <span class="emis-forn">${r.f}</span>
+      <span class="emis-data">${fd(r.pv)}</span>
+      <span class="emis-badge" style="background:#D8F3DC;color:#27500A">${dias}d</span>
+    </div>`;
+  }).join('');
 }
 
 function rChips(){
