@@ -359,7 +359,19 @@ window.enviarSolicitacao=function(){
 // DADOS
 const GS='https://docs.google.com/spreadsheets/d/1VzEkjB-MbJVwIFK0RsRoK-1N-95cjXUIwa0yJWSqpvQ/export?format=xlsx';
 const GS_CRON='https://docs.google.com/spreadsheets/d/1VzEkjB-MbJVwIFK0RsRoK-1N-95cjXUIwa0yJWSqpvQ/export?format=xlsx&sheet=CRONOGRAMA';
-let cronDatas={}; // mapa de nome → data término
+// Mapeamento disciplina → ID da atividade no cronograma
+const DISC_CRON={
+  'Civil':'256',           // SE Londrina (G...) término 28/06/2026
+  'civil':'256',
+  'Eletromecânico':'260',  // SE Londrina (P...) término 27/08/2026
+  'eletromecânico':'260',
+  'Fabricação':'260',
+  'fabricação':'260',
+  'Elétrico':'260',        // também depende da montagem pós painéis
+  'elétrico':'260',
+  'Telecomunicação':'260',
+  'telecomunicação':'260',
+};
 const DISC_GRUPOS={Civil:{discs:['civil','Civil'],cor:'#0D2B4E'},Eletromecânico:{discs:['Eletromecânico','eletromecânico','Fabricação','fabricação'],cor:'#1A4A7A'},Elétrico:{discs:['Elétrico','elétrico','Telecomunicação','telecomunicação'],cor:'#1B5E35'}};
 const FORN_FABRIC=['TEKSEA','HUBBELL','BLUTRAFOS','ELETELE','HDS','GERMER','CST','DELTASTAR'];
 const SC={'Liberado':{cls:'b-lib'},'Em análise':{cls:'b-anal'},'Pendente de emissão':{cls:'b-pend'},'Não liberado':{cls:'b-nlib'},'Liberado com comentários':{cls:'b-lcom'},'Cancelado':{cls:'b-canc'}};
@@ -420,9 +432,9 @@ async function loadGS(){
       const rawCron=XLSX.utils.sheet_to_json(wsCron,{header:1,defval:'',raw:false});
       cronDatas={};
       rawCron.slice(1).forEach(r=>{
-        const nome=String(r[1]||'').trim();
+        const id=String(r[0]||'').trim();
         const termino=r[7]?new Date(r[7]):null;
-        if(nome&&termino&&!isNaN(termino))cronDatas[nome.toLowerCase()]=termino;
+        if(id&&termino&&!isNaN(termino))cronDatas[id]=termino;
       });
     }
 
@@ -504,7 +516,6 @@ function rDisc(){
 
 function rAlertas(){
   const today=new Date();
-  // Documentos críticos: não liberados ou em análise, sem emissão, data prevista vencida ou em risco (<=30 dias)
   const criticos=rows
     .filter(r=>{
       if(r.s==='Liberado'||r.s==='Cancelado'||r.s==='Liberado com comentários')return false;
@@ -512,22 +523,20 @@ function rAlertas(){
       const d=td(r.pv);
       if(!d)return false;
       const dias=Math.round((d-today)/86400000);
-      return dias<=30; // vencidos ou dentro de 30 dias
+      // Inclui se vencido ou dentro de 30 dias
+      // OU se a data do cronograma da disciplina está chegando (<=45 dias)
+      const dataCron=getDataCron(r.d);
+      const diasCron=dataCron?Math.round((dataCron-today)/86400000):null;
+      return dias<=30||(diasCron!==null&&diasCron<=45);
     })
     .map(r=>{
       const d=td(r.pv);
-      const dias=Math.round((d-today)/86400000);
-      // Tenta cruzar com cronograma
-      let diasCron=null;
-      for(const [nome,termino] of Object.entries(cronDatas)){
-        if(nome.includes(r.d.toLowerCase())||nome.includes((r.f||'').toLowerCase())){
-          diasCron=Math.round((termino-today)/86400000);
-          break;
-        }
-      }
+      const dias=d?Math.round((d-today)/86400000):null;
+      const dataCron=getDataCron(r.d);
+      const diasCron=dataCron?Math.round((dataCron-today)/86400000):null;
       return{...r,dias,diasCron};
     })
-    .sort((a,b)=>a.dias-b.dias)
+    .sort((a,b)=>(a.dias||999)-(b.dias||999))
     .slice(0,6);
 
   const el=document.getElementById('alertaLista');
@@ -535,13 +544,13 @@ function rAlertas(){
 
   el.innerHTML=criticos.map(r=>{
     let bg,ft,label;
-    if(r.dias<0){bg='#FCEBEB';ft='#791F1F';label=`${Math.abs(r.dias)}d atrasado`}
-    else if(r.dias<=7){bg='#FCEBEB';ft='#791F1F';label=`${r.dias}d restantes`}
-    else if(r.dias<=14){bg='#FFE5CC';ft='#7A3500';label=`${r.dias}d restantes`}
-    else{bg:'#FFF3CD';ft='#633806';label=`${r.dias}d restantes`}
+    if(r.dias!==null&&r.dias<0){bg='#FCEBEB';ft='#791F1F';label=`${Math.abs(r.dias)}d atrasado`}
+    else if(r.dias!==null&&r.dias<=7){bg='#FCEBEB';ft='#791F1F';label=`${r.dias}d restantes`}
+    else if(r.dias!==null&&r.dias<=14){bg='#FFE5CC';ft='#7A3500';label=`${r.dias}d restantes`}
+    else{bg='#FFF3CD';ft='#633806';label=r.dias!==null?`${r.dias}d restantes`:'sem data'}
 
     const cronInfo=r.diasCron!==null
-      ?`<span style="font-size:10px;font-family:var(--mono);color:var(--hint)"> · obra em ${r.diasCron}d</span>`
+      ?`<span style="font-size:10px;font-family:var(--mono);color:var(--hint)"> · obra termina em ${r.diasCron}d</span>`
       :'';
 
     return`<div class="alerta-item" style="border-left-color:${ft}">
