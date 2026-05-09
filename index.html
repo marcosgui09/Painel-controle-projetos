@@ -187,6 +187,7 @@ tbody tr:hover td{background:var(--bg)}
     </div>
     <button class="login-btn" onclick="fazerLogin()">Entrar no sistema</button>
     <div class="login-err" id="loginErr">E-mail ou senha incorretos.</div>
+    <button onclick="recuperarSenha()" style="background:none;border:none;color:var(--azul5);font-size:12px;font-family:var(--mono);cursor:pointer;margin-top:.5rem;text-decoration:underline">Esqueceu sua senha?</button>
     <div class="login-divider"><span>ou</span></div>
     <button class="login-btn-sec" onclick="document.getElementById('modalAcesso').classList.add('open')">Solicitar acesso</button>
     <div class="login-footer">RM2 Engenharia · Controle de Documentos</div>
@@ -333,7 +334,16 @@ window.fazerLogin=function(){
   auth.signInWithEmailAndPassword(email,senha).catch(function(){err.style.display='block'});
 };
 
-window.enviarSolicitacao=function(){
+window.recuperarSenha=function(){
+  const email=document.getElementById('loginEmail').value;
+  if(!email){document.getElementById('loginErr').textContent='Digite seu e-mail primeiro.';document.getElementById('loginErr').style.display='block';return}
+  auth.sendPasswordResetEmail(email).then(function(){
+    document.getElementById('loginErr').style.display='none';
+    alert('Email de redefinição enviado para '+email+'. Verifique sua caixa de entrada!');
+  }).catch(function(){
+    document.getElementById('loginErr').textContent='E-mail não encontrado.';document.getElementById('loginErr').style.display='block';
+  });
+};
   const nome=document.getElementById('solNome').value.trim();
   const email=document.getElementById('solEmail').value.trim();
   const empresa=document.getElementById('solEmpresa').value.trim();
