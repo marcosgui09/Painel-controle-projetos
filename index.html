@@ -149,13 +149,48 @@ tbody tr:hover td{background:var(--bg)}
 
 <div id="loginSection" style="display:none">
   <div class="login-card">
-    <img src="https://www.rm2engenharia.com.br/img/Logo.png" class="login-logo" style="height:48px;max-width:200px;object-fit:contain">
-    <div class="login-titulo">Controle de Documentos</div>
+    <div class="login-logo-wrap">
+      <img src="https://www.rm2engenharia.com.br/img/Logo.png" class="login-logo">
+    </div>
+    <div class="login-titulo">Bem-vindo</div>
     <div class="login-sub">SE Londrina · RM2 Engenharia</div>
-    <input class="login-input" type="email" id="loginEmail" placeholder="E-mail" autocomplete="email">
-    <input class="login-input" type="password" id="loginSenha" placeholder="Senha" autocomplete="current-password">
-    <button class="login-btn" onclick="fazerLogin()">Entrar</button>
+    <div class="login-field">
+      <label class="login-label">Usuário</label>
+      <input class="login-input" type="email" id="loginEmail" placeholder="seu@email.com" autocomplete="email">
+    </div>
+    <div class="login-field">
+      <label class="login-label">Senha</label>
+      <input class="login-input" type="password" id="loginSenha" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')fazerLogin()">
+    </div>
+    <button class="login-btn" onclick="fazerLogin()">Entrar no sistema</button>
     <div class="login-err" id="loginErr">E-mail ou senha incorretos.</div>
+    <div class="login-divider"><span>ou</span></div>
+    <button class="login-btn-sec" onclick="document.getElementById('modalAcesso').classList.add('open')">Solicitar acesso</button>
+    <div class="login-footer">RM2 Engenharia · Controle de Documentos</div>
+  </div>
+</div>
+
+<!-- MODAL SOLICITAR ACESSO -->
+<div class="modal-overlay" id="modalAcesso">
+  <div class="modal-card">
+    <button class="modal-btn-fechar" onclick="document.getElementById('modalAcesso').classList.remove('open')">✕</button>
+    <div class="modal-titulo">Solicitar acesso</div>
+    <div class="modal-sub">Preencha seus dados e aguarde aprovação do administrador.</div>
+    <div class="login-field">
+      <label class="login-label" style="color:rgba(255,255,255,.4)">Nome completo</label>
+      <input class="login-input" type="text" id="solNome" placeholder="Seu nome">
+    </div>
+    <div class="login-field">
+      <label class="login-label" style="color:rgba(255,255,255,.4)">E-mail</label>
+      <input class="login-input" type="email" id="solEmail" placeholder="seu@email.com">
+    </div>
+    <div class="login-field">
+      <label class="login-label" style="color:rgba(255,255,255,.4)">Empresa / Função</label>
+      <input class="login-input" type="text" id="solEmpresa" placeholder="Ex: SPCS · Projetista Elétrico">
+    </div>
+    <button class="login-btn" onclick="enviarSolicitacao()">Enviar solicitação</button>
+    <div class="login-err" id="solErr">Preencha todos os campos.</div>
+    <div class="login-ok" id="solOk">✓ Solicitação enviada! Aguarde contato.</div>
   </div>
 </div>
 
@@ -448,7 +483,18 @@ window.expCSV=function(){const rs=gf();if(!rs.length){alert('Nenhum dado.');retu
 
 window.expXLSX=function(){const rs=gf();if(!rs.length){alert('Nenhum dado.');return}const data=[['Código','Título','Fornecedor','Disciplina','Revisão','Data Prevista','Data Emissão','Status','Link ACC'],...rs.map(r=>[r.c,r.t,r.f,r.d,r.rv,fd(r.pv),fd(r.em),r.s,r.lk])];const ws=XLSX.utils.aoa_to_sheet(data);ws['!cols']=[{wch:35},{wch:50},{wch:16},{wch:16},{wch:8},{wch:14},{wch:14},{wch:22},{wch:20}];const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Documentos');XLSX.writeFile(wb,'documentos'+bTag()+'.xlsx');};
 
-window.imprimirRelatorio=function(){
+window.enviarSolicitacao=function(){
+  const nome=document.getElementById('solNome').value.trim();
+  const email=document.getElementById('solEmail').value.trim();
+  const empresa=document.getElementById('solEmpresa').value.trim();
+  const err=document.getElementById('solErr');
+  const ok=document.getElementById('solOk');
+  err.style.display='none';ok.style.display='none';
+  if(!nome||!email||!empresa){err.style.display='block';return}
+  // Abre email para o admin aprovar
+  window.location.href=`mailto:marcos.soares@rm2engenharia.com.br?subject=Solicitação de acesso · Dashboard SE Londrina&body=Nome: ${nome}%0AE-mail: ${email}%0AEmpresa/Função: ${empresa}%0A%0APor favor, cadastre meu acesso ao sistema.`;
+  ok.style.display='block';
+};
   const now=new Date();
   const fmt=now.toLocaleDateString('pt-BR')+' às '+now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
   document.getElementById('printDate').textContent='Gerado em: '+fmt;
