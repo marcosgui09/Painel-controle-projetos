@@ -420,13 +420,13 @@ async function loadGS(){
     const arr=await resp.arrayBuffer();
     const wb=XLSX.read(arr,{type:'array',cellDates:true});
 
-    // Lê aba BASE LD
+    // Lê BASE LD
     const ws=wb.Sheets['BASE LD'];
     if(!ws)throw new Error('Aba BASE LD não encontrada');
     const raw=XLSX.utils.sheet_to_json(ws,{header:1,defval:'',raw:false});
     const data=raw.slice(5).filter(r=>r[0]&&String(r[0]).trim()!=='').map(r=>mr(r));
 
-    // Lê aba CRONOGRAMA
+    // Lê CRONOGRAMA
     const wsCron=wb.Sheets['CRONOGRAMA'];
     if(wsCron){
       const rawCron=XLSX.utils.sheet_to_json(wsCron,{header:1,defval:'',raw:false});
@@ -439,7 +439,10 @@ async function loadGS(){
     }
 
     init(data,'Google Sheets');
-  }catch(e){document.getElementById('errBox').style.display='block'}
+  }catch(e){
+    console.error(e);
+    document.getElementById('errBox').style.display='block';
+  }
 }
 
 function loadManual(input){
