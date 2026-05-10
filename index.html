@@ -359,19 +359,7 @@ window.enviarSolicitacao=function(){
 // DADOS
 const GS='https://docs.google.com/spreadsheets/d/1VzEkjB-MbJVwIFK0RsRoK-1N-95cjXUIwa0yJWSqpvQ/export?format=xlsx';
 const GS_CRON='https://docs.google.com/spreadsheets/d/1VzEkjB-MbJVwIFK0RsRoK-1N-95cjXUIwa0yJWSqpvQ/export?format=xlsx&sheet=CRONOGRAMA';
-// Mapeamento disciplina → ID da atividade no cronograma
-const DISC_CRON={
-  'Civil':'256',           // SE Londrina (G...) término 28/06/2026
-  'civil':'256',
-  'Eletromecânico':'260',  // SE Londrina (P...) término 27/08/2026
-  'eletromecânico':'260',
-  'Fabricação':'260',
-  'fabricação':'260',
-  'Elétrico':'260',        // também depende da montagem pós painéis
-  'elétrico':'260',
-  'Telecomunicação':'260',
-  'telecomunicação':'260',
-};
+
 const DISC_GRUPOS={Civil:{discs:['civil','Civil'],cor:'#0D2B4E'},Eletromecânico:{discs:['Eletromecânico','eletromecânico','Fabricação','fabricação'],cor:'#1A4A7A'},Elétrico:{discs:['Elétrico','elétrico','Telecomunicação','telecomunicação'],cor:'#1B5E35'}};
 const FORN_FABRIC=['TEKSEA','HUBBELL','BLUTRAFOS','ELETELE','HDS','GERMER','CST','DELTASTAR'];
 const SC={'Liberado':{cls:'b-lib'},'Em análise':{cls:'b-anal'},'Pendente de emissão':{cls:'b-pend'},'Não liberado':{cls:'b-nlib'},'Liberado com comentários':{cls:'b-lcom'},'Cancelado':{cls:'b-canc'}};
