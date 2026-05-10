@@ -12,8 +12,6 @@
 :root{--azul:#0D2B4E;--azul2:#1A4A7A;--azul3:#2E6FAD;--azul4:#5B96C8;--azul5:#8BAED1;--verde:#1B5E35;--verde2:#267A47;--verde3:#2E9957;--bg:#F4F2ED;--surface:#FDFCFA;--border:#D8D4CC;--borderL:#E8E4DC;--text:#1A1814;--muted:#7A7670;--hint:#AAA69E;--font:'IBM Plex Sans',sans-serif;--mono:'IBM Plex Mono',monospace}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;font-size:14px}
-
-/* LOGIN */
 #loginSection{display:flex;min-height:100vh;background:var(--azul);align-items:center;justify-content:center}
 .login-card{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:2.5rem 2.25rem;width:100%;max-width:380px}
 .login-logo-wrap{display:flex;justify-content:center;margin-bottom:1.75rem}
@@ -37,8 +35,6 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .login-err{font-size:12px;color:#F09595;font-family:var(--mono);text-align:center;margin-top:.75rem;display:none}
 .login-ok{font-size:12px;color:#2E9957;font-family:var(--mono);text-align:center;margin-top:.75rem;display:none}
 .login-footer{text-align:center;margin-top:1.25rem;font-size:11px;color:rgba(255,255,255,.2);font-family:var(--mono)}
-
-/* MODAL */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:1000;align-items:center;justify-content:center}
 .modal-overlay.open{display:flex}
 .modal-card{background:var(--azul2);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:2rem;width:100%;max-width:360px;position:relative}
@@ -46,8 +42,6 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .modal-fechar:hover{color:#fff}
 .modal-titulo{font-size:16px;font-weight:600;color:#fff;margin-bottom:4px}
 .modal-sub{font-size:12px;color:var(--azul5);font-family:var(--mono);margin-bottom:1.25rem}
-
-/* TOPBAR */
 .topbar{background:var(--azul);color:#FDFCFA;padding:0 2rem;height:52px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;gap:1rem}
 .topbar-left{display:flex;align-items:center;gap:12px}
 .topbar-title{font-family:var(--mono);font-size:13px;font-weight:500;letter-spacing:.06em;white-space:nowrap}
@@ -55,8 +49,6 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .topbar-meta{font-size:11px;color:var(--azul5);font-family:var(--mono)}
 .btn-sm{font-family:var(--mono);font-size:11px;padding:4px 10px;border:0.5px solid #2A5080;border-radius:6px;background:transparent;color:var(--azul5);cursor:pointer}
 .btn-sm:hover{border-color:var(--azul5);color:#FDFCFA}
-
-/* LOADING */
 .container{max-width:1400px;margin:0 auto;padding:1.5rem}
 .loading-section{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:calc(100vh - 52px);gap:1rem}
 .spinner{width:40px;height:40px;border:3px solid var(--borderL);border-top-color:var(--azul);border-radius:50%;animation:spin .8s linear infinite}
@@ -66,8 +58,6 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .error-box p{font-size:13px;color:#791F1F;margin-bottom:1rem;line-height:1.6}
 .btn-retry{font-family:var(--mono);font-size:12px;padding:7px 14px;border:1px solid #791F1F;border-radius:6px;background:transparent;color:#791F1F;cursor:pointer;margin-right:8px}
 .btn-manual{font-family:var(--mono);font-size:12px;padding:7px 14px;border:1px solid var(--azul);border-radius:6px;background:var(--azul);color:#FDFCFA;cursor:pointer}
-
-/* DASHBOARD */
 #dashboard{display:none}
 .page-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:1.5rem;padding-bottom:1.25rem;border-bottom:1px solid var(--borderL);flex-wrap:wrap;gap:1rem}
 .page-header h1{font-size:22px;font-weight:600;letter-spacing:-.02em}
@@ -154,15 +144,7 @@ tbody tr:hover td{background:var(--bg)}
 .al:hover{border-color:var(--azul);color:var(--azul)}
 .es{text-align:center;padding:3rem;color:var(--hint);font-size:13px;font-family:var(--mono)}
 .footer{text-align:center;padding:1.5rem;font-size:11px;color:var(--hint);font-family:var(--mono)}
-
-/* PRINT */
-@media print{
-  .topbar,.header-actions,.btn-sm,.banner{display:none!important}
-  .container{padding:8px!important}
-  body{font-size:12px!important;background:#fff!important}
-  .print-header{display:flex!important}
-  .tbl-section{display:none!important}
-}
+@media print{.topbar,.header-actions,.btn-sm,.banner{display:none!important}.container{padding:8px!important}body{font-size:12px!important;background:#fff!important}.print-header{display:flex!important}.tbl-section{display:none!important}}
 .print-header{display:none;align-items:center;justify-content:space-between;padding:8px 0 12px;border-bottom:2px solid var(--azul);margin-bottom:12px}
 .print-header-right{text-align:right;font-size:11px;color:var(--muted);font-family:var(--mono)}
 @media(max-width:900px){.metrics{grid-template-columns:repeat(2,1fr)}.disc-grid,.linha-inferior,.marcos-grid{grid-template-columns:1fr}.container{padding:1rem}}
@@ -170,12 +152,9 @@ tbody tr:hover td{background:var(--bg)}
 </head>
 <body>
 
-<!-- LOGIN -->
 <div id="loginSection">
   <div class="login-card">
-    <div class="login-logo-wrap">
-      <img src="https://www.rm2engenharia.com.br/img/Logo.png" class="login-logo">
-    </div>
+    <div class="login-logo-wrap"><img src="https://www.rm2engenharia.com.br/img/Logo.png" class="login-logo"></div>
     <div class="login-titulo">Bem-vindo</div>
     <div class="login-sub">SE Londrina · RM2 Engenharia</div>
     <div class="login-field">
@@ -195,7 +174,6 @@ tbody tr:hover td{background:var(--bg)}
   </div>
 </div>
 
-<!-- MODAL SOLICITAR ACESSO -->
 <div class="modal-overlay" id="modalAcesso">
   <div class="modal-card">
     <button class="modal-fechar" onclick="document.getElementById('modalAcesso').classList.remove('open')">✕</button>
@@ -219,7 +197,6 @@ tbody tr:hover td{background:var(--bg)}
   </div>
 </div>
 
-<!-- TOPBAR -->
 <div class="topbar" id="topbar" style="display:none">
   <div class="topbar-left">
     <img src="https://www.rm2engenharia.com.br/img/Logo.png" alt="RM2" style="height:30px">
@@ -258,7 +235,6 @@ tbody tr:hover td{background:var(--bg)}
         <div id="printDate"></div>
       </div>
     </div>
-
     <div class="page-header">
       <div><h1>Painel de Controle de Documentos</h1><p id="sub"></p></div>
       <div class="header-actions">
@@ -268,24 +244,19 @@ tbody tr:hover td{background:var(--bg)}
         <button class="btn" onclick="imprimirRelatorio()" style="background:#1B5E35;color:#fff;border-color:#1B5E35">📄 Relatório</button>
       </div>
     </div>
-
     <div class="banner"><span id="banMsg"></span><span style="opacity:.6">Google Sheets — atualiza automaticamente</span></div>
-
     <div class="marcos-grid">
       <div class="marco"><div class="marco-lbl">Desligamento</div><div class="marco-data">25/05/2026</div><div class="marco-sub" id="diasShutdown"></div></div>
       <div class="marco"><div class="marco-lbl">Chegada dos painéis</div><div class="marco-data">04/08/2026</div><div class="marco-sub">Início montagem</div></div>
       <div class="marco"><div class="marco-lbl">Conclusão prevista</div><div class="marco-data">04/09/2026</div><div class="marco-sub">Energização</div></div>
     </div>
-
     <div class="metrics" id="mRow"></div>
     <div class="sec-label">Saúde por disciplina</div>
     <div class="disc-grid" id="discGrid"></div>
-
     <div class="linha-inferior">
       <div class="card"><div class="card-titulo">Documentos críticos · pendentes vs. cronograma</div><div id="alertaLista"></div></div>
       <div class="card"><div class="card-titulo">Próximas emissões previstas</div><div id="emisLista"></div></div>
     </div>
-
     <div class="sec-label">Lista completa de documentos</div>
     <div class="tbl-section">
       <div class="tbl-top">
@@ -306,7 +277,89 @@ tbody tr:hover td{background:var(--bg)}
 </div>
 
 <script>
-// FIREBASE
+// ── CONSTANTES ────────────────────────────────────
+const GS='https://docs.google.com/spreadsheets/d/1VzEkjB-MbJVwIFK0RsRoK-1N-95cjXUIwa0yJWSqpvQ/export?format=xlsx';
+
+const DISC_GRUPOS={
+  Civil:{discs:['civil','Civil'],cor:'#0D2B4E'},
+  Eletromecânico:{discs:['Eletromecânico','eletromecânico','Fabricação','fabricação'],cor:'#1A4A7A'},
+  Elétrico:{discs:['Elétrico','elétrico','Telecomunicação','telecomunicação'],cor:'#1B5E35'}
+};
+
+const FORN_FABRIC=['TEKSEA','HUBBELL','BLUTRAFOS','ELETELE','HDS','GERMER','CST','DELTASTAR'];
+
+// Mapeamento disciplina → ID da atividade no cronograma
+const DISC_CRON={
+  'Civil':'256','civil':'256',
+  'Eletromecânico':'260','eletromecânico':'260',
+  'Fabricação':'260','fabricação':'260',
+  'Elétrico':'260','elétrico':'260',
+  'Telecomunicação':'260','telecomunicação':'260'
+};
+
+const SC={
+  'Liberado':{cls:'b-lib'},
+  'Em análise':{cls:'b-anal'},
+  'Pendente de emissão':{cls:'b-pend'},
+  'Não liberado':{cls:'b-nlib'},
+  'Liberado com comentários':{cls:'b-lcom'},
+  'Cancelado':{cls:'b-canc'}
+};
+const SO=Object.keys(SC);
+
+let rows=[], fil={s:'Todos',d:'Todas',f:'Todos'}, srch='';
+let cronDatas={};
+
+// ── HELPERS ───────────────────────────────────────
+function farolInfo(pct){
+  return pct>=50
+    ?{cor:'#2E9957',bg:'#D8F3DC',txt:'#27500A',label:'Saudável'}
+    :{cor:'#E09040',bg:'#FFF3CD',txt:'#633806',label:'Atenção'};
+}
+
+function getDataCron(disciplina){
+  const id=DISC_CRON[disciplina];
+  return(id&&cronDatas[id])?cronDatas[id]:null;
+}
+
+function gc(s){
+  if(!s)return{cls:'b-canc'};
+  const map={
+    'Liberado':'b-lib','Em análise':'b-anal',
+    'Pendente de emissão':'b-pend','Não liberado':'b-nlib',
+    'Liberado com comentários':'b-lcom','Cancelado':'b-canc'
+  };
+  return{cls:map[s.trim()]||'b-canc'};
+}
+
+function fd(v){if(!v||v==='')return'—';const d=new Date(v);return isNaN(d)?String(v).slice(0,10):d.toLocaleDateString('pt-BR')}
+function td(v){if(!v)return null;const d=new Date(v);return isNaN(d)?null:d}
+function gf(){return rows.filter(r=>{if(fil.s!=='Todos'&&r.s!==fil.s)return false;if(fil.d!=='Todas'&&r.d!==fil.d)return false;if(fil.f!=='Todos'&&r.f!==fil.f)return false;if(srch&&!r.c.toLowerCase().includes(srch)&&!r.t.toLowerCase().includes(srch))return false;return true})}
+function mr(r){return{c:String(r[0]||'').trim(),rv:String(r[1]||'').trim(),f:String(r[2]||'').trim(),t:String(r[3]||'').trim(),d:String(r[4]||'').trim(),pv:r[6]?String(r[6]):'',em:r[9]?String(r[9]):'',s:String(r[11]||'').trim(),lk:String(r[25]||'').trim()}}
+function bTag(){const p=[];if(fil.f!=='Todos')p.push('_'+fil.f.replace(/\s/g,'-'));if(fil.d!=='Todas')p.push('_'+fil.d.replace(/\s/g,'-'));if(fil.s!=='Todos')p.push('_'+fil.s.replace(/[\s/]/g,'-'));return p.join('')||'_todos'}
+
+// ── GAUGE SVG ─────────────────────────────────────
+function buildGaugeSVG(aprov,anal,tot){
+  const cl=v=>Math.min(1,Math.max(0,v));
+  const pAp=cl(aprov/tot),pAn=cl(anal/tot),pRe=Math.max(0,1-pAp-pAn);
+  const pct=Math.round(pAp*100);
+  const f=farolInfo(pct);
+  const r=80,C=Math.PI*r;
+  const dAp=pAp*C,dAn=pAn*C,dRe=pRe*C;
+  return{pct,f,svg:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 115" style="width:100%;display:block">
+    <path d="M20,100 A${r},${r} 0 0,1 180,100" fill="none" stroke="#E8E4DC" stroke-width="18" stroke-linecap="butt"/>
+    <path d="M20,100 A${r},${r} 0 0,1 180,100" fill="none" stroke="#2E9957" stroke-width="18" stroke-linecap="butt" stroke-dasharray="${dAp.toFixed(3)} ${C}"/>
+    <path d="M20,100 A${r},${r} 0 0,1 180,100" fill="none" stroke="#185FA5" stroke-width="18" stroke-linecap="butt" stroke-dasharray="${dAn.toFixed(3)} ${C}" stroke-dashoffset="${(-dAp).toFixed(3)}"/>
+    <path d="M20,100 A${r},${r} 0 0,1 180,100" fill="none" stroke="#E24B4A" stroke-width="18" stroke-linecap="butt" stroke-dasharray="${dRe.toFixed(3)} ${C}" stroke-dashoffset="${(-(dAp+dAn)).toFixed(3)}"/>
+    <line x1="100" y1="100" x2="${(100+60*Math.cos(Math.PI*(1-pAp))).toFixed(2)}" y2="${(100-60*Math.sin(Math.PI*(1-pAp))).toFixed(2)}" stroke="#0D2B4E" stroke-width="2.5" stroke-linecap="round"/>
+    <circle cx="100" cy="100" r="5" fill="#0D2B4E"/>
+    <text x="100" y="82" text-anchor="middle" font-size="16" font-weight="500" fill="${f.cor}" font-family="IBM Plex Mono,monospace">${pct}%</text>
+    <text x="16" y="112" text-anchor="middle" font-size="8" fill="#AAA69E" font-family="IBM Plex Mono,monospace">0%</text>
+    <text x="184" y="112" text-anchor="middle" font-size="8" fill="#AAA69E" font-family="IBM Plex Mono,monospace">100%</text>
+  </svg>`};
+}
+
+// ── FIREBASE ──────────────────────────────────────
 const firebaseConfig={apiKey:"AIzaSyBoVA_e5vjckvzKc44g5A4DS5ZFbx3boI4",authDomain:"dashboard-projetos-rm2.firebaseapp.com",projectId:"dashboard-projetos-rm2",storageBucket:"dashboard-projetos-rm2.firebasestorage.app",messagingSenderId:"681381892681",appId:"1:681381892681:web:f58dd9dfa2cafb14fe6598"};
 firebase.initializeApp(firebaseConfig);
 
@@ -340,7 +393,7 @@ window.recuperarSenha=function(){
   err.style.display='none';
   if(!email){err.textContent='Digite seu e-mail acima primeiro.';err.style.display='block';return}
   firebase.auth().sendPasswordResetEmail(email)
-    .then(function(){err.style.cssText='display:block;color:#2E9957';err.textContent='✓ Email de redefinição enviado! Verifique sua caixa de entrada.'})
+    .then(function(){err.style.cssText='display:block;color:#2E9957';err.textContent='✓ Email de redefinição enviado!'})
     .catch(function(){err.textContent='E-mail não encontrado.';err.style.display='block'});
 };
 
@@ -356,48 +409,7 @@ window.enviarSolicitacao=function(){
   ok.textContent='✓ Solicitação enviada! Aguarde contato.';ok.style.display='block';
 };
 
-// DADOS
-const GS='https://docs.google.com/spreadsheets/d/1VzEkjB-MbJVwIFK0RsRoK-1N-95cjXUIwa0yJWSqpvQ/export?format=xlsx';
-const GS_CRON='https://docs.google.com/spreadsheets/d/1VzEkjB-MbJVwIFK0RsRoK-1N-95cjXUIwa0yJWSqpvQ/export?format=xlsx&sheet=CRONOGRAMA';
-
-const DISC_GRUPOS={Civil:{discs:['civil','Civil'],cor:'#0D2B4E'},Eletromecânico:{discs:['Eletromecânico','eletromecânico','Fabricação','fabricação'],cor:'#1A4A7A'},Elétrico:{discs:['Elétrico','elétrico','Telecomunicação','telecomunicação'],cor:'#1B5E35'}};
-const FORN_FABRIC=['TEKSEA','HUBBELL','BLUTRAFOS','ELETELE','HDS','GERMER','CST','DELTASTAR'];
-const SC={'Liberado':{cls:'b-lib'},'Em análise':{cls:'b-anal'},'Pendente de emissão':{cls:'b-pend'},'Não liberado':{cls:'b-nlib'},'Liberado com comentários':{cls:'b-lcom'},'Cancelado':{cls:'b-canc'}};
-const SO=Object.keys(SC);
-let rows=[],fil={s:'Todos',d:'Todas',f:'Todos'},srch='';
-
-function farolInfo(pct){return pct>=50?{cor:'#2E9957',bg:'#D8F3DC',txt:'#27500A',label:'Saudável'}:{cor:'#E09040',bg:'#FFF3CD',txt:'#633806',label:'Atenção'}}
-
-function buildGaugeSVG(aprov,anal,tot){
-  const cl=v=>Math.min(1,Math.max(0,v));
-  const pAp=cl(aprov/tot),pAn=cl(anal/tot),pRe=Math.max(0,1-pAp-pAn);
-  const pct=Math.round(pAp*100);
-  const f=farolInfo(pct);
-  const r=80,C=Math.PI*r;
-  const dAp=pAp*C,dAn=pAn*C,dRe=pRe*C;
-  return{pct,f,svg:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 115" style="width:100%;display:block">
-    <path d="M20,100 A${r},${r} 0 0,1 180,100" fill="none" stroke="#E8E4DC" stroke-width="18" stroke-linecap="butt"/>
-    <path d="M20,100 A${r},${r} 0 0,1 180,100" fill="none" stroke="#2E9957" stroke-width="18" stroke-linecap="butt" stroke-dasharray="${dAp.toFixed(3)} ${C}"/>
-    <path d="M20,100 A${r},${r} 0 0,1 180,100" fill="none" stroke="#185FA5" stroke-width="18" stroke-linecap="butt" stroke-dasharray="${dAn.toFixed(3)} ${C}" stroke-dashoffset="${(-dAp).toFixed(3)}"/>
-    <path d="M20,100 A${r},${r} 0 0,1 180,100" fill="none" stroke="#E24B4A" stroke-width="18" stroke-linecap="butt" stroke-dasharray="${dRe.toFixed(3)} ${C}" stroke-dashoffset="${(-(dAp+dAn)).toFixed(3)}"/>
-    <line x1="100" y1="100" x2="${(100+60*Math.cos(Math.PI*(1-pAp))).toFixed(2)}" y2="${(100-60*Math.sin(Math.PI*(1-pAp))).toFixed(2)}" stroke="#0D2B4E" stroke-width="2.5" stroke-linecap="round"/>
-    <circle cx="100" cy="100" r="5" fill="#0D2B4E"/>
-    <text x="100" y="82" text-anchor="middle" font-size="16" font-weight="500" fill="${f.cor}" font-family="IBM Plex Mono,monospace">${pct}%</text>
-    <text x="16" y="112" text-anchor="middle" font-size="8" fill="#AAA69E" font-family="IBM Plex Mono,monospace">0%</text>
-    <text x="184" y="112" text-anchor="middle" font-size="8" fill="#AAA69E" font-family="IBM Plex Mono,monospace">100%</text>
-  </svg>`};
-}
-
-function gc(s){
-  if(!s)return{cls:'b-canc'};
-  const map={'Liberado':'b-lib','Em análise':'b-anal','Pendente de emissão':'b-pend','Não liberado':'b-nlib','Liberado com comentários':'b-lcom','Cancelado':'b-canc'};
-  return{cls:map[s.trim()]||'b-canc'};
-}
-function fd(v){if(!v||v==='')return'—';const d=new Date(v);return isNaN(d)?String(v).slice(0,10):d.toLocaleDateString('pt-BR')}
-function td(v){if(!v)return null;const d=new Date(v);return isNaN(d)?null:d}
-function gf(){return rows.filter(r=>{if(fil.s!=='Todos'&&r.s!==fil.s)return false;if(fil.d!=='Todas'&&r.d!==fil.d)return false;if(fil.f!=='Todos'&&r.f!==fil.f)return false;if(srch&&!r.c.toLowerCase().includes(srch)&&!r.t.toLowerCase().includes(srch))return false;return true})}
-function mr(r){return{c:String(r[0]||'').trim(),rv:String(r[1]||'').trim(),f:String(r[2]||'').trim(),t:String(r[3]||'').trim(),d:String(r[4]||'').trim(),pv:r[6]?String(r[6]):'',em:r[9]?String(r[9]):'',s:String(r[11]||'').trim(),lk:String(r[25]||'').trim()}}
-
+// ── DADOS ─────────────────────────────────────────
 async function loadGS(){
   document.getElementById('loadingSection').style.display='flex';
   document.getElementById('dashboard').style.display='none';
@@ -408,25 +420,25 @@ async function loadGS(){
     const arr=await resp.arrayBuffer();
     const wb=XLSX.read(arr,{type:'array',cellDates:true});
 
-    // Lê BASE LD
+    // BASE LD
     const ws=wb.Sheets['BASE LD'];
     if(!ws)throw new Error('Aba BASE LD não encontrada');
     const raw=XLSX.utils.sheet_to_json(ws,{header:1,defval:'',raw:false});
     const data=raw.slice(5).filter(r=>r[0]&&String(r[0]).trim()!=='').map(r=>mr(r));
 
-    // Lê CRONOGRAMA — se falhar não quebra o resto
+    // CRONOGRAMA — falha silenciosa
     try{
       const wsCron=wb.Sheets['CRONOGRAMA'];
       if(wsCron){
-        const rawCron=XLSX.utils.sheet_to_json(wsCron,{header:1,defval:'',raw:false});
         cronDatas={};
+        const rawCron=XLSX.utils.sheet_to_json(wsCron,{header:1,defval:'',raw:false});
         rawCron.slice(1).forEach(r=>{
           const id=String(r[0]||'').trim();
           const termino=r[7]?new Date(r[7]):null;
           if(id&&termino&&!isNaN(termino))cronDatas[id]=termino;
         });
       }
-    }catch(eCron){console.warn('Cronograma não carregado:',eCron)}
+    }catch(e){console.warn('Cronograma não carregado:',e)}
 
     init(data,'Google Sheets');
   }catch(e){
@@ -470,6 +482,7 @@ function init(data,fonte){
 window.setF=function(t,v){const df={s:'Todos',d:'Todas',f:'Todos'};fil[t]=fil[t]===v?df[t]:v;rChips();rTbl();rAF()};
 function rAll(){rMet();rDisc();rAlertas();rEmissoes();rChips();rTbl();rAF()}
 
+// ── RENDER ────────────────────────────────────────
 function rMet(){
   const t=rows.length,bS={};rows.forEach(r=>{bS[r.s]=(bS[r.s]||0)+1});
   const lib=bS['Liberado']||0,an=bS['Em análise']||0,pe=bS['Pendente de emissão']||0,nl=bS['Não liberado']||0;
@@ -514,22 +527,22 @@ function rAlertas(){
       if(r.s==='Liberado'||r.s==='Cancelado'||r.s==='Liberado com comentários')return false;
       if(r.em&&r.em!=='')return false;
       const d=td(r.pv);
-      if(!d)return false;
-      const dias=Math.round((d-today)/86400000);
-      // Inclui se vencido ou dentro de 30 dias
-      // OU se a data do cronograma da disciplina está chegando (<=45 dias)
       const dataCron=getDataCron(r.d);
+      const diasPv=d?Math.round((d-today)/86400000):null;
       const diasCron=dataCron?Math.round((dataCron-today)/86400000):null;
-      return dias<=30||(diasCron!==null&&diasCron<=45);
+      // Crítico se: data prevista <=30 dias OU atividade da obra termina em <=45 dias
+      return(diasPv!==null&&diasPv<=30)||(diasCron!==null&&diasCron<=45);
     })
     .map(r=>{
       const d=td(r.pv);
-      const dias=d?Math.round((d-today)/86400000):null;
       const dataCron=getDataCron(r.d);
-      const diasCron=dataCron?Math.round((dataCron-today)/86400000):null;
-      return{...r,dias,diasCron};
+      return{
+        ...r,
+        dias:d?Math.round((d-today)/86400000):null,
+        diasCron:dataCron?Math.round((dataCron-today)/86400000):null
+      };
     })
-    .sort((a,b)=>(a.dias||999)-(b.dias||999))
+    .sort((a,b)=>(a.dias??999)-(b.dias??999))
     .slice(0,6);
 
   const el=document.getElementById('alertaLista');
@@ -543,8 +556,7 @@ function rAlertas(){
     else{bg='#FFF3CD';ft='#633806';label=r.dias!==null?`${r.dias}d restantes`:'sem data'}
 
     const cronInfo=r.diasCron!==null
-      ?`<span style="font-size:10px;font-family:var(--mono);color:var(--hint)"> · obra termina em ${r.diasCron}d</span>`
-      :'';
+      ?`<span style="font-size:10px;font-family:var(--mono);color:var(--hint)"> · obra em ${r.diasCron}d</span>`:'';
 
     return`<div class="alerta-item" style="border-left-color:${ft}">
       <div style="flex:1;overflow:hidden">
@@ -562,15 +574,13 @@ function rAlertas(){
 
 function rEmissoes(){
   const today=new Date();
-  // Próximas emissões: docs sem emissão, não vencidos, data prevista futura > 30 dias
   const proximas=rows
     .filter(r=>{
       if(r.em&&r.em!=='')return false;
       if(r.s==='Cancelado'||r.s==='Liberado')return false;
       const d=td(r.pv);
       if(!d)return false;
-      const dias=Math.round((d-today)/86400000);
-      return dias>30; // só futuros além de 30 dias (os urgentes estão nos críticos)
+      return Math.round((d-today)/86400000)>30;
     })
     .sort((a,b)=>td(a.pv)-td(b.pv))
     .slice(0,5);
@@ -609,10 +619,13 @@ function rTbl(){
   document.getElementById('tCount').textContent=rs.length+' documentos';
   const tb=document.getElementById('tBody');
   if(!rs.length){tb.innerHTML='<tr><td colspan="9" class="es">Nenhum documento encontrado</td></tr>';return}
-  tb.innerHTML=rs.map(r=>{const c=gc(r.s);const lk=r.lk&&r.lk.startsWith('http')?`<a class="al" href="${r.lk}" target="_blank">↗ ACC</a>`:'—';return`<tr><td class="mc" title="${r.c}">${r.c}</td><td title="${r.t}">${r.t}</td><td>${r.f}</td><td>${r.d}</td><td class="mc">${r.rv}</td><td class="mc">${fd(r.pv)}</td><td class="mc">${fd(r.em)}</td><td><span class="badge ${c.cls}">${r.s||'—'}</span></td><td>${lk}</td></tr>`;}).join('');
+  tb.innerHTML=rs.map(r=>{
+    const c=gc(r.s);
+    const lk=r.lk&&r.lk.startsWith('http')?`<a class="al" href="${r.lk}" target="_blank">↗ ACC</a>`:'—';
+    return`<tr><td class="mc" title="${r.c}">${r.c}</td><td title="${r.t}">${r.t}</td><td>${r.f}</td><td>${r.d}</td><td class="mc">${r.rv}</td><td class="mc">${fd(r.pv)}</td><td class="mc">${fd(r.em)}</td><td><span class="badge ${c.cls}">${r.s||'—'}</span></td><td>${lk}</td></tr>`;
+  }).join('');
 }
 
-function bTag(){const p=[];if(fil.f!=='Todos')p.push('_'+fil.f.replace(/\s/g,'-'));if(fil.d!=='Todas')p.push('_'+fil.d.replace(/\s/g,'-'));if(fil.s!=='Todos')p.push('_'+fil.s.replace(/[\s/]/g,'-'));return p.join('')||'_todos'}
 window.expCSV=function(){const rs=gf();if(!rs.length){alert('Nenhum dado.');return}const h=['Código','Título','Fornecedor','Disciplina','Revisão','Data Prevista','Data Emissão','Status','Link ACC'];const lines=[h.join(';'),...rs.map(r=>[r.c,r.t,r.f,r.d,r.rv,fd(r.pv),fd(r.em),r.s,r.lk].map(v=>`"${String(v||'').replace(/"/g,'""')}"`).join(';'))];const blob=new Blob(['\uFEFF'+lines.join('\n')],{type:'text/csv;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='documentos'+bTag()+'.csv';a.click()};
 window.expXLSX=function(){const rs=gf();if(!rs.length){alert('Nenhum dado.');return}const data=[['Código','Título','Fornecedor','Disciplina','Revisão','Data Prevista','Data Emissão','Status','Link ACC'],...rs.map(r=>[r.c,r.t,r.f,r.d,r.rv,fd(r.pv),fd(r.em),r.s,r.lk])];const ws=XLSX.utils.aoa_to_sheet(data);ws['!cols']=[{wch:35},{wch:50},{wch:16},{wch:16},{wch:8},{wch:14},{wch:14},{wch:22},{wch:20}];const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Documentos');XLSX.writeFile(wb,'documentos'+bTag()+'.xlsx')};
 window.imprimirRelatorio=function(){const now=new Date();document.getElementById('printDate').textContent='Gerado em: '+now.toLocaleDateString('pt-BR')+' às '+now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});window.print()};
